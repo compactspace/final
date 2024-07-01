@@ -1,0 +1,1667 @@
+warning: in the working copy of 'final3/finall3/pom.xml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'final3/finall3/target/m2e-wtp/web-resources/META-INF/maven/com.spring/finall/pom.xml', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/final3/finall3/pom.xml b/final3/finall3/pom.xml[m
+[1mindex 4640547..262f50d 100644[m
+[1m--- a/final3/finall3/pom.xml[m
+[1m+++ b/final3/finall3/pom.xml[m
+[36m@@ -100,7 +100,10 @@[m
+ [m
+ [m
+ [m
+[31m-		<!-- 결제 외부API -->[m
+[32m+[m		[32m<!-- 외부서버와 통신[m
+[32m+[m		[32m대표 제공클래스는[m
+[32m+[m		[32mHttpClient client = HttpClientBuilder.create().build();[m[41m		[m
+[32m+[m		[32m -->[m
+ 		<dependency>[m
+ 			<groupId>org.apache.httpcomponents</groupId>[m
+ 			<artifactId>httpclient</artifactId>[m
+[36m@@ -108,7 +111,10 @@[m
+ 		</dependency>[m
+ [m
+ [m
+[31m-		<!--아작스 -->[m
+[32m+[m		[32m<!--json형태를 자바로 또는 자바를 json형태로[m
+[32m+[m		[32m대표 제공클래스는[m[41m [m
+[32m+[m		[32mObjectMapper mapper = new ObjectMapper();[m
+[32m+[m		[32m-->[m
+ 		<dependency>[m
+ 			<groupId>com.fasterxml.jackson.core</groupId>[m
+ 			<artifactId>jackson-databind</artifactId>[m
+[1mdiff --git a/final3/finall3/src/main/java/com/spring/finall/user/UserVO.java b/final3/finall3/src/main/java/com/spring/finall/user/UserVO.java[m
+[1mindex 9a41075..137a37b 100644[m
+[1m--- a/final3/finall3/src/main/java/com/spring/finall/user/UserVO.java[m
+[1m+++ b/final3/finall3/src/main/java/com/spring/finall/user/UserVO.java[m
+[36m@@ -3,6 +3,10 @@[m [mpackage com.spring.finall.user;[m
+ import java.util.ArrayList;[m
+ import java.util.List;[m
+ [m
+[32m+[m[32mimport lombok.ToString;[m
+[32m+[m
+[32m+[m
+[32m+[m[32m@ToString[m
+ public class UserVO {[m
+ [m
+ 	private String id;[m
+[36m@@ -151,10 +155,5 @@[m [mpublic class UserVO {[m
+ 	}[m
+ [m
+ 	[m
+[31m-	@Override[m
+[31m-	[m
+[31m-	public	String toString() {[m
+[31m-		return "["+"id:"+this.getId()+"pwd:"+this.getPassword()+"]";[m
+[31m-	}[m
+ 	[m
+ }[m
+[1mdiff --git a/final3/finall3/src/main/java/com/spring/finall/user/impl/MemberDAOMybatis.java b/final3/finall3/src/main/java/com/spring/finall/user/impl/MemberDAOMybatis.java[m
+[1mindex 5719c20..784f037 100644[m
+[1m--- a/final3/finall3/src/main/java/com/spring/finall/user/impl/MemberDAOMybatis.java[m
+[1m+++ b/final3/finall3/src/main/java/com/spring/finall/user/impl/MemberDAOMybatis.java[m
+[36m@@ -21,7 +21,7 @@[m [mpublic class MemberDAOMybatis {[m
+ 	public boolean insertMembership(UserVO vo) {[m
+ [m
+ 		Integer checkrow = (Integer) mybatis.selectOne("UserVO.isDuplicated", vo);[m
+[31m-System.out.println("checkrow->>>>"+checkrow);[m
+[32m+[m		[32mSystem.out.println("checkrow->>>>"+checkrow);[m
+ 		[m
+ 		[m
+ 		if (checkrow == 0) {[m
+[36m@@ -56,13 +56,21 @@[m [mSystem.out.println("checkrow->>>>"+checkrow);[m
+ 	public boolean checkidMembership(UserVO vo) {[m
+ [m
+ 		[m
+[32m+[m[41m		[m
+[32m+[m		[32mSystem.out.println("UserVO.toString");[m
+[32m+[m		[32mSystem.out.println(vo);[m
+[32m+[m		[32mSystem.out.println("vo.getId()");[m
+[32m+[m		[32mSystem.out.println(vo.getId());[m
+[32m+[m[41m		[m
+ 		Object check = mybatis.selectOne("UserVO.checkidMembership", vo);[m
+[32m+[m		[32mSystem.out.println("아이확인값이 널?:"+check);[m
+[32m+[m[41m		[m
+ 		if (check == null) {[m
+[31m-			System.out.println("베티스의트루문은타나");[m
+[32m+[m			[32mSystem.out.println("네이버 정보로 가입한적없음");[m
+ 			checkid = true;[m
+ 			return checkid;[m
+ 		} else {[m
+[31m-			//즉 가입되어 있는 회원이라면[m
+[32m+[m			[32mSystem.out.println("네이버 정보로 가입한적있음");[m
+ 			checkid = false;[m
+ 			return checkid;[m
+ 		}[m
+[1mdiff --git a/final3/finall3/src/main/java/com/spring/finall/view/controller/Import.java b/final3/finall3/src/main/java/com/spring/finall/view/controller/Import.java[m
+[1mindex 36269ef..b30787b 100644[m
+[1m--- a/final3/finall3/src/main/java/com/spring/finall/view/controller/Import.java[m
+[1m+++ b/final3/finall3/src/main/java/com/spring/finall/view/controller/Import.java[m
+[36m@@ -124,7 +124,8 @@[m [mpublic class Import {[m
+ 		HttpPost post = new HttpPost(IMPORT_TOKEN_URL);[m
+ 		Map<String, String> m = new HashMap<String, String>();[m
+ 		m.put("imp_key", KEY);[m
+[31m-		m.put("imp_secret", SECRET); // 맵방식이라 보낼시 받는 곳엣 폼으로 바꿔주자 :new UrlEncodedFormEntity(convertParameter(m)[m
+[32m+[m		[32mm.put("imp_secret", SECRET);[m[41m [m
+[32m+[m		[32m// 맵방식이라 보낼시 받는 곳엣 폼으로 바꿔주자 :new UrlEncodedFormEntity(convertParameter(m)[m
+ 		try {[m
+ 			post.setEntity(new UrlEncodedFormEntity(convertParameter(m)));[m
+ 			HttpResponse res = client.execute(post);[m
+[1mdiff --git a/final3/finall3/src/main/java/com/spring/finall/view/controller/NaverLoginController.java b/final3/finall3/src/main/java/com/spring/finall/view/controller/NaverLoginController.java[m
+[1mindex 48d4a55..0328ae7 100644[m
+[1m--- a/final3/finall3/src/main/java/com/spring/finall/view/controller/NaverLoginController.java[m
+[1m+++ b/final3/finall3/src/main/java/com/spring/finall/view/controller/NaverLoginController.java[m
+[36m@@ -1,357 +1,400 @@[m
+[31m-package com.spring.finall.view.controller;[m
+[31m-[m
+[31m-import java.io.BufferedReader;[m
+[31m-[m
+[31m-import java.io.IOException;[m
+[31m-import java.io.InputStream;[m
+[31m-import java.io.InputStreamReader;[m
+[31m-import java.math.BigInteger;[m
+[31m-import java.net.HttpURLConnection;[m
+[31m-import java.net.MalformedURLException;[m
+[31m-import java.net.URL;[m
+[31m-import java.net.URLEncoder;[m
+[31m-import java.security.SecureRandom;[m
+[31m-import java.util.ArrayList;[m
+[31m-import java.util.HashMap;[m
+[31m-import java.util.List;[m
+[31m-import java.util.Map;[m
+[31m-import java.util.Map.Entry;[m
+[31m-import java.util.Set;[m
+[31m-[m
+[31m-import javax.servlet.RequestDispatcher;[m
+[31m-import javax.servlet.ServletException;[m
+[31m-import javax.servlet.http.HttpServletRequest;[m
+[31m-import javax.servlet.http.HttpServletResponse;[m
+[31m-import javax.servlet.http.HttpSession;[m
+[31m-[m
+[31m-import org.apache.http.HttpResponse;[m
+[31m-import org.apache.http.NameValuePair;[m
+[31m-import org.apache.http.client.HttpClient;[m
+[31m-import org.apache.http.client.entity.UrlEncodedFormEntity;[m
+[31m-import org.apache.http.client.methods.HttpPost;[m
+[31m-import org.apache.http.impl.client.HttpClientBuilder;[m
+[31m-import org.apache.http.message.BasicNameValuePair;[m
+[31m-import org.apache.http.util.EntityUtils;[m
+[31m-import org.springframework.beans.factory.annotation.Autowired;[m
+[31m-import org.springframework.stereotype.Controller;[m
+[31m-import org.springframework.web.bind.annotation.RequestMapping;[m
+[31m-import org.springframework.web.bind.annotation.ResponseBody;[m
+[31m-[m
+[31m-import com.fasterxml.jackson.databind.JsonNode;[m
+[31m-import com.fasterxml.jackson.databind.ObjectMapper;[m
+[31m-import com.spring.finall.user.MemberService;[m
+[31m-import com.spring.finall.user.UserVO;[m
+[31m-[m
+[31m-@Controller[m
+[31m-public class NaverLoginController {[m
+[31m-[m
+[31m-	@Autowired[m
+[31m-	private MemberService memberService;[m
+[31m-[m
+[31m-	private String clientId = "oIB_pADeJKcErdJaXoqA";// 애플리케이션 클라이언트 아이디값";[m
+[31m-	private String ClientSecret = "xhm_mwBHDx";[m
+[31m-	@SuppressWarnings("deprecation")[m
+[31m-	//네이버 로그인후 바로 회원정보 조회 API를 호출하게 되는 콜백URI[m
+[31m-	private String redirectURI = URLEncoder.encode("http://localhost:8090/finall2/isExistId.do");[m
+[31m-	SecureRandom random = new SecureRandom();[m
+[31m-	private String state = new BigInteger(130, random).toString();[m
+[31m-	private String apiURL = "https://nid.naver.com/oauth2.0/authorize?response_type=code" + "&client_id=" + clientId[m
+[31m-			+ "&redirect_uri=" + redirectURI + "&state=" + state;[m
+[31m-	private String infoURL = "https://openapi.naver.com/v1/nid/me";[m
+[31m-[m
+[31m-	// 팩트 체그 리스펀스 바디 지우면 오류남, 그런데[m
+[31m-	@RequestMapping(value = "/naverloginform.do")[m
+[31m-	@ResponseBody[m
+[31m-	public void isalreadyid(UserVO vo, HttpServletRequest req, HttpServletResponse res, HttpSession session)[m
+[31m-			throws IOException {[m
+[31m-		/* Session session= req.getSession() */[m
+[31m-		/* session.setAttribute("state", state); */[m
+[31m-[m
+[31m-		res.sendRedirect(apiURL);[m
+[31m-		// return "location.href="+naverloginform;[m
+[31m-[m
+[31m-	}[m
+[31m-[m
+[31m-//네이버 로그인후 api 에서 주는 url에 담긴 파라미터도 req.getParameter("code") 로 가져올 수있다! 제일중요[m
+[31m-	@RequestMapping(value = "/isExistId.do")[m
+[31m-	public void isExistId(UserVO vo, HttpServletRequest req, HttpServletResponse response, String str)[m
+[31m-			throws IOException {[m
+[31m-		// System.out.println("코드값은->>>>>>"+req.getParameter("code"));[m
+[31m-		// System.out.println("state값은->>>>>>"+req.getParameter("state"));[m
+[31m-[m
+[31m-		//네이버 로그인후 얻은 코드로 토큰을 발급는 url				    [m
+[31m-		String gettokenapiURL = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&" + "client_id="[m
+[31m-				+ clientId + "&client_secret=" + ClientSecret + "&code=" + req.getParameter("code") + "&state="[m
+[31m-				+ req.getParameter("state");[m
+[31m-[m
+[31m-		// System.out.println("gettokenapiURL 유알엘 조합이 잘 되었을까?"+gettokenapiURL);[m
+[31m-		/* res.sendRedirect(gettokenapiURL); */[m
+[31m-[m
+[31m-		String result = "";[m
+[31m-		HttpClient client = HttpClientBuilder.create().build();[m
+[31m-		HttpPost post = new HttpPost(gettokenapiURL);[m
+[31m-		Map<String, String> m = new HashMap<String, String>();[m
+[31m-[m
+[31m-		try {[m
+[31m-//		Apache HttpClient를 이용하면 간편하게 HTTP request를 보낼 수 있습니다.[m
+[31m-//		간혹 웹 서버를 만들면서 다른 서버로 보터 request를 보내 response 받아 데이터를 처리해야할 때가 있는데 이 때 [m
+[31m-//		HttpClient를 이용하면 간단하게 구현 가능합니다.[m
+[31m-[m
+[31m-			post.setEntity(new UrlEncodedFormEntity(convertParameter(m)));[m
+[31m-			// client.excute(POST) 가 외부로 전송 하는건데[m
+[31m-			HttpResponse res = client.execute(post);[m
+[31m-			// System.out.println("System.out.println(res); 값은");[m
+[31m-//		System.out.println(res);[m
+[31m-			ObjectMapper mapper = new ObjectMapper();[m
+[31m-[m
+[31m-			String infoheader = EntityUtils.toString(res.getEntity());[m
+[31m-[m
+[31m-			JsonNode rootNode = mapper.readTree(infoheader);[m
+[31m-			String INFOHEADER = mapper.writeValueAsString(rootNode);[m
+[31m-			System.out.println("JsonNode rootNode->>>>" + rootNode);[m
+[31m-			JsonNode resNode = rootNode.get("access_token");[m
+[31m-			String token = mapper.writeValueAsString(resNode);[m
+[31m-[m
+[31m-			// System.out.println("자바의 문자열로 변환되었니>??->>>>"+token instanceof String);[m
+[31m-[m
+[31m-			// isExistInfo(INFOHEADER, response);[m
+[31m-			isExistInfo(vo, token, response, req);[m
+[31m-[m
+[31m-		} catch (Exception e) {[m
+[31m-			e.printStackTrace();[m
+[31m-		}[m
+[31m-[m
+[31m-		// 오류일시 어짜피 네이버측에서 메세지에 인증 실패라 떠서[m
+[31m-		// 문자열 "error" 를 준뒤[m
+[31m-		// 호출한 함수에서 조건문 분기로 처리하는 용도이다.[m
+[31m-[m
+[31m-	}[m
+[31m-[m
+[31m-	//네이버회원 정보 조회 API를 받아오는 일반 메소드[m
+[31m-	public void isExistInfo(UserVO vo, String token, HttpServletResponse res, HttpServletRequest req)[m
+[31m-			throws IOException {[m
+[31m-[m
+[31m-		// 아오 "Bearer " 이렇게 공백=스페이스바 한칸 추가 해야 인식하네[m
+[31m-		String header = "Bearer " + token;[m
+[31m-		// System.out.println("header 가 널이 아니길->>"+header);[m
+[31m-		Map<String, String> requestHeaders = new HashMap<>();[m
+[31m-		requestHeaders.put("Authorization", header);[m
+[31m-[m
+[31m-		String responseBody = get(infoURL, requestHeaders);[m
+[31m-[m
+[31m-		// System.out.println("리스펀스바디 타입:->>"+responseBody);[m
+[31m-[m
+[31m-		ObjectMapper mapper = new ObjectMapper();[m
+[31m-[m
+[31m-		JsonNode clientinfo = mapper.readTree(responseBody);[m
+[31m-[m
+[31m-		System.out.println("JsonNode clientinfo->>>>" + clientinfo);[m
+[31m-		JsonNode response = clientinfo.get("response");[m
+[31m-		// System.out.println("이제 응답은 받았는데 response를 가져오나 "+response);[m
+[31m-		// 이건 유일하게 한번 발급되며, 유저 정보 끌고올시 언제든 유일한거만 가져옴 이걸로[m
+[31m-		// 로그인 이나 회원가입 시키면 될듯[m
+[31m-		JsonNode responseid = response.get("id");[m
+[31m-		JsonNode responsemobile = response.get("mobile");[m
+[31m-		JsonNode responsemoname = response.get("name");[m
+[31m-//		email":"younggoo7000@naver.com","mobile":"010-9313-0686","mobile_e164":"+821093130686","name":"신원찬",[m
+[31m-[m
+[31m-		// 설명하기 어려운데[m
+[31m-		// 제이슨이 문자열을 "" 로 감싸서 가져와[m
+[31m-		// 나중 제이에스티엘에서 인식을 못해 쌍따옴표 제거해둠 이것때문에 1시간 날림 ㅠ[m
+[31m-		String str1 = mapper.writeValueAsString(responseid);[m
+[31m-		String str2 = mapper.writeValueAsString(responsemobile);[m
+[31m-		String str3 = mapper.writeValueAsString(responsemoname);[m
+[31m-		String id = str1.replaceAll("\"", "");[m
+[31m-		String mobile = str2.replaceAll("\"", "");[m
+[31m-		String name = str3.replaceAll("\"", "");[m
+[31m-[m
+[31m-		vo.setId(id);[m
+[31m-		vo.setUser_tell(mobile);[m
+[31m-		vo.setUser_name(name);[m
+[31m-		vo.setPassword("불필요");[m
+[31m-		vo.setUser_where("naveruser");[m
+[31m-		// vo 완벽히 수정후 에트리뷰트는 주석처리한다.[m
+[31m-		req.setAttribute("naver_id", "yes");[m
+[31m-		req.setAttribute("id", id);[m
+[31m-		req.setAttribute("mobile", mobile);[m
+[31m-		req.setAttribute("name", name);[m
+[31m-		req.setAttribute("UserVO", vo);[m
+[31m-		RequestDispatcher rds = req.getRequestDispatcher("/navercheckid.do");[m
+[31m-		try {[m
+[31m-			rds.forward(req, res);[m
+[31m-		} catch (ServletException | IOException e) {[m
+[31m-			// TODO Auto-generated catch block[m
+[31m-			e.printStackTrace();[m
+[31m-		}[m
+[31m-[m
+[31m-	}[m
+[31m-[m
+[31m-	private static String get(String infoURL, Map<String, String> requestHeaders) {[m
+[31m-//		HttpURLConnection은 ?[m
+[31m-//				URL 내용을 읽어오거나 , URL에 GET,POST 방식으로 데이터를 전달할 때 사용한다.[m
+[31m-		HttpURLConnection con = connect(infoURL);[m
+[31m-		System.out.println("get 메소드속 requestHeaders");[m
+[31m-		System.out.println(requestHeaders);[m
+[31m-		try {[m
+[31m-			con.setRequestMethod("GET");[m
+[31m-			for (Map.Entry<String, String> header : requestHeaders.entrySet()) {[m
+[31m-				con.setRequestProperty(header.getKey(), header.getValue());[m
+[31m-			}[m
+[31m-[m
+[31m-			int responseCode = con.getResponseCode();[m
+[31m-			System.out.println("responseCode 는 연결상태로 뭐가 찍히려나->>" + responseCode);[m
+[31m-			System.out.println("HttpURLConnection.HTTP_OK->>>" + HttpURLConnection.HTTP_OK);[m
+[31m-[m
+[31m-			if (responseCode == HttpURLConnection.HTTP_OK) { // 정상 호출[m
+[31m-				System.out.println("con.getInputStream()는????");[m
+[31m-				System.out.println(con.getInputStream());[m
+[31m-				return readBody(con.getInputStream());[m
+[31m-			} else { // 에러 발생[m
+[31m-				return readBody(con.getErrorStream());[m
+[31m-			}[m
+[31m-		} catch (IOException e) {[m
+[31m-			throw new RuntimeException("API 요청과 응답 실패", e);[m
+[31m-		} finally {[m
+[31m-			con.disconnect();[m
+[31m-		}[m
+[31m-	}[m
+[31m-[m
+[31m-	private static HttpURLConnection connect(String apiUrl) {[m
+[31m-		try {[m
+[31m-			URL url = new URL(apiUrl);[m
+[31m-			return (HttpURLConnection) url.openConnection();[m
+[31m-		} catch (MalformedURLException e) {[m
+[31m-			throw new RuntimeException("API URL이 잘못되었습니다. : " + apiUrl, e);[m
+[31m-		} catch (IOException e) {[m
+[31m-			throw new RuntimeException("연결이 실패했습니다. : " + apiUrl, e);[m
+[31m-		}[m
+[31m-	}[m
+[31m-[m
+[31m-	private static String readBody(InputStream body) {[m
+[31m-		InputStreamReader streamReader = new InputStreamReader(body);[m
+[31m-		System.out.println("body 값은?");[m
+[31m-		System.out.println(body);[m
+[31m-		System.out.println("streamReader 값은?");[m
+[31m-		System.out.println(streamReader);[m
+[31m-[m
+[31m-		try (BufferedReader lineReader = new BufferedReader(streamReader)) {[m
+[31m-			StringBuilder responseBody = new StringBuilder();[m
+[31m-			System.out.println("lineReader눈?");[m
+[31m-			System.out.println(lineReader);[m
+[31m-			String line;[m
+[31m-			while ((line = lineReader.readLine()) != null) {[m
+[31m-				System.out.println("lineReader.readLine()는???");[m
+[31m-				System.out.println(line);[m
+[31m-				responseBody.append(line);[m
+[31m-			}[m
+[31m-			System.out.println("리턴직전 responseBody");[m
+[31m-			System.out.println(responseBody);[m
+[31m-			return responseBody.toString();[m
+[31m-		} catch (IOException e) {[m
+[31m-			throw new RuntimeException("API 응답을 읽는데 실패했습니다.", e);[m
+[31m-		}[m
+[31m-	}[m
+[31m-[m
+[31m-	// 네이버 회원 API호출후 이미 가입된 회원이면 로그인 아니라면 회원가입 시키는 메소드[m
+[31m-	@RequestMapping(value = "/navercheckid.do")[m
+[31m-	public String naverMembershipCheck(UserVO vo, HttpSession session, HttpServletRequest req) throws Exception {[m
+[31m-[m
+[31m-		System.out.println("디스페쳐로 UserVO오 넘어온거 확인" + req.getAttribute("UserVO"));[m
+[31m-		vo = (UserVO) req.getAttribute("UserVO");[m
+[31m-		System.out.println("아이디는?" + vo.getId());[m
+[31m-		System.out.println("핸드폰번호는?" + vo.getUser_tell());[m
+[31m-		System.out.println("이름은?" + vo.getUser_name());[m
+[31m-//		System.out.println("네이버컨트롤로에서 디스페쳐로  일로 발급받은 아이디가  와졌니?" + req.getAttribute("id"));[m
+[31m-//		System.out.println("네이버컨트롤로에서 디스페쳐로  일로 발급받은 핸드폰  와졌니?" + req.getAttribute("mobile"));[m
+[31m-//		System.out.println("네이버컨트롤로에서 디스페쳐로  일로 발급받은 이  와졌니?" + req.getAttribute("name"));[m
+[31m-		String id = vo.getId();[m
+[31m-[m
+[31m-[m
+[31m-		boolean check = memberService.checkidMembership(vo);[m
+[31m-		System.out.println("투르 뜨면 회원 가입시킴" + check);[m
+[31m-		if (check) {[m
+[31m-			try {[m
+[31m-				memberService.insertMembership(vo);[m
+[31m-				 Integer user_code= memberService.selectusercode(vo);[m
+[31m-				session.setAttribute("userId", id);[m
+[31m-				session.setAttribute("user_code",user_code);[m
+[31m-				return "/mainhome.jsp";[m
+[31m-[m
+[31m-			} catch (Exception e) {[m
+[31m-				e.printStackTrace();[m
+[31m-				System.out.println("내가 뜨면 프라이머리키 위배로 데이터삽입 오류");[m
+[31m-				req.setAttribute("err","err");[m
+[31m-				return "/login.jsp";			}[m
+[31m-[m
+[31m-[m
+[31m-		} else {[m
+[31m-			System.out.println("펠스뜨면 바로 로그인처리" + check);[m
+[31m-			 Integer user_code= memberService.selectusercode(vo);[m
+[31m-			session.setAttribute("userId", vo.getId());[m
+[31m-			session.setAttribute("user_code", user_code);			[m
+[31m-			return "/mainhome.jsp";[m
+[31m-		}[m
+[31m-[m
+[31m-	} // 네이버로그인 후 이미 가입된 회원인지 함수 종료[m
+[31m-[m
+[31m-	[m
+[31m-	// Map을 사용해서 Http요청 파라미터를 만들어 주는 함수 private[m
+[31m-	// Map을 사용해서 Http요청 파라미터를 만들어 주는 함수 private[m
+[31m-		List<NameValuePair> convertParameter(Map<String, String> paramMap) {[m
+[31m-			List<NameValuePair> paramList = new ArrayList<NameValuePair>();[m
+[31m-			Set<Entry<String, String>> entries = paramMap.entrySet();[m
+[31m-			/*[m
+[31m-			 * Set Interface -> 순서X 중복X     Set 인터페이스는 중복 요소를 포함할 수 없으며 랜덤 액세스를 허용하지않아[m
+[31m-			 * iterator 또는 foreach를 이용하여 요소를 탐색할 수 있다. 현재 내용이 어렵지[m
+[31m-			 * [m
+[31m-			 */[m
+[31m-			for (Entry<String, String> entry : entries) {[m
+[31m-				paramList.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));[m
+[31m-			}[m
+[31m-			return paramList;[m
+[31m-		}[m
+[31m-	[m
+[31m-	[m
+[31m-	[m
+[31m-	[m
+[31m-	[m
+[31m-	[m
+[31m-	[m
+[31m-//	// 네이버로그인후 자동 회원가입시도함수[m
+[31m-//	@RequestMapping(value = "/insertNaverMembership.do")[m
+[31m-//	public String insertNaverMembership(UserVO vo, HttpSession session, HttpServletRequest req) throws Exception {[m
+[31m-//		// 네이버 가입자는 패스워드 필요없어서 지움[m
+[31m-////		System.out.println("req id->>" + req.getParameter("id"));[m
+[31m-//		String id = req.getParameter("id");[m
+[31m-////		System.out.println("id를 못가져오나" + vo.getId());[m
+[31m-//		vo.setUser_where("naveruser");[m
+[31m-////		vo.setNaver_id("네이버이용자");[m
+[31m-//		vo.setUser_name("미기입");[m
+[31m-//		vo.setPassword("불필요");[m
+[32m+[m[32m//package com.spring.finall.view.controller;[m
+[32m+[m[32m//[m
+[32m+[m[32m//import java.io.BufferedReader;[m
+[32m+[m[32m//[m
+[32m+[m[32m//import java.io.IOException;[m
+[32m+[m[32m//import java.io.InputStream;[m
+[32m+[m[32m//import java.io.InputStreamReader;[m
+[32m+[m[32m//import java.math.BigInteger;[m
+[32m+[m[32m//import java.net.HttpURLConnection;[m
+[32m+[m[32m//import java.net.MalformedURLException;[m
+[32m+[m[32m//import java.net.URL;[m
+[32m+[m[32m//import java.net.URLEncoder;[m
+[32m+[m[32m//import java.security.SecureRandom;[m
+[32m+[m[32m//import java.util.ArrayList;[m
+[32m+[m[32m//import java.util.HashMap;[m
+[32m+[m[32m//import java.util.List;[m
+[32m+[m[32m//import java.util.Map;[m
+[32m+[m[32m//import java.util.Map.Entry;[m
+[32m+[m[32m//import java.util.Set;[m
+[32m+[m[32m//[m
+[32m+[m[32m//import javax.servlet.RequestDispatcher;[m
+[32m+[m[32m//import javax.servlet.ServletException;[m
+[32m+[m[32m//import javax.servlet.http.HttpServletRequest;[m
+[32m+[m[32m//import javax.servlet.http.HttpServletResponse;[m
+[32m+[m[32m//import javax.servlet.http.HttpSession;[m
+[32m+[m[32m//[m
+[32m+[m[32m//import org.apache.http.HttpResponse;[m
+[32m+[m[32m//import org.apache.http.NameValuePair;[m
+[32m+[m[32m//import org.apache.http.client.HttpClient;[m
+[32m+[m[32m//import org.apache.http.client.entity.UrlEncodedFormEntity;[m
+[32m+[m[32m//import org.apache.http.client.methods.HttpPost;[m
+[32m+[m[32m//import org.apache.http.impl.client.HttpClientBuilder;[m
+[32m+[m[32m//import org.apache.http.message.BasicNameValuePair;[m
+[32m+[m[32m//import org.apache.http.util.EntityUtils;[m
+[32m+[m[32m//import org.springframework.beans.factory.annotation.Autowired;[m
+[32m+[m[32m//import org.springframework.stereotype.Controller;[m
+[32m+[m[32m//import org.springframework.web.bind.annotation.RequestMapping;[m
+[32m+[m[32m//import org.springframework.web.bind.annotation.ResponseBody;[m
+[32m+[m[32m//[m
+[32m+[m[32m//import com.fasterxml.jackson.databind.JsonNode;[m
+[32m+[m[32m//import com.fasterxml.jackson.databind.ObjectMapper;[m
+[32m+[m[32m//import com.spring.finall.user.MemberService;[m
+[32m+[m[32m//import com.spring.finall.user.UserVO;[m
+[32m+[m[32m//[m
+[32m+[m[32m//@Controller[m
+[32m+[m[32m//public class NaverLoginController {[m
+[32m+[m[32m//[m
+[32m+[m[32m//	@Autowired[m
+[32m+[m[32m//	private MemberService memberService;[m
+[32m+[m[32m//[m
+[32m+[m[32m//	private String clientId = "oIB_pADeJKcErdJaXoqA";// 애플리케이션 클라이언트 아이디값";[m
+[32m+[m[32m//	private String ClientSecret = "xhm_mwBHDx";[m
+[32m+[m[32m//	@SuppressWarnings("deprecation")[m
+[32m+[m[32m//	//네이버 로그인후 바로 회원정보 조회 API를 호출하게 되는 콜백URI[m
+[32m+[m[32m//	private String redirectURI = URLEncoder.encode("http://localhost:8090/finall/isExistId.do");[m
+[32m+[m[32m//	SecureRandom random = new SecureRandom();[m
+[32m+[m[32m//	private String state = new BigInteger(130, random).toString();[m
+[32m+[m[32m//	//네이버 로그인창이 뜬뒤  헤더속 redirectURI 을 본다. 그다음 개발자가 정한 콜백유알엘과 일치 하는지 보고 콜백유알앨로 응답을 준다잉[m
+[32m+[m[32m//	private String apiURL = "https://nid.naver.com/oauth2.0/authorize?response_type=code" + "&client_id=" + clientId[m
+[32m+[m[32m//			+ "&redirect_uri=" + redirectURI + "&state=" + state;[m
+[32m+[m[32m//	//사용자 정보를 주는 네이버 api url 이다.[m
+[32m+[m[32m//	private String infoURL = "https://openapi.naver.com/v1/nid/me";[m
+[32m+[m[32m//[m
+[32m+[m[32m//	// 팩트 체그 리스펀스 바디 지우면 오류남, 그런데[m
+[32m+[m[32m//	@RequestMapping(value = "/naverloginform.do")[m
+[32m+[m[32m//	@ResponseBody[m
+[32m+[m[32m//	public void isalreadyid(UserVO vo, HttpServletRequest req, HttpServletResponse res, HttpSession session)[m
+[32m+[m[32m//			throws IOException {[m
+[32m+[m[32m//		/* Session session= req.getSession() */[m
+[32m+[m[32m//		/* session.setAttribute("state", state); */[m
+[32m+[m[32m//[m
+[32m+[m[32m//		res.sendRedirect(apiURL);[m
+[32m+[m[32m//		// return "location.href="+naverloginform;[m
+[32m+[m[32m//[m
+[32m+[m[32m//	}[m
+[32m+[m[32m//[m
+[32m+[m[32m//	//네이버 로그인후 api 에서 주는 url에 담긴 파라미터도 req.getParameter("code") 로 가져올 수있다! 제일중요[m
+[32m+[m[32m//	@RequestMapping(value = "/isExistId.do")[m
+[32m+[m[32m//	public void isExistId(UserVO vo, HttpServletRequest req, HttpServletResponse response, String str)[m
+[32m+[m[32m//			throws IOException {[m
+[32m+[m[32m//		// System.out.println("코드값은->>>>>>"+req.getParameter("code"));[m
+[32m+[m[32m//		// System.out.println("state값은->>>>>>"+req.getParameter("state"));[m
+[32m+[m[32m//[m
+[32m+[m[32m//		//네이버 로그인후 얻은 코드로 토큰을 발급는 url[m[41m				    [m
+[32m+[m[32m//		String gettokenapiURL = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&" + "client_id="[m
+[32m+[m[32m//				+ clientId + "&client_secret=" + ClientSecret + "&code=" + req.getParameter("code") + "&state="[m
+[32m+[m[32m//				+ req.getParameter("state");[m
+[32m+[m[32m//[m
+[32m+[m[32m//		// System.out.println("gettokenapiURL 유알엘 조합이 잘 되었을까?"+gettokenapiURL);[m
+[32m+[m[32m//		/* res.sendRedirect(gettokenapiURL); */[m
+[32m+[m[32m//[m
+[32m+[m[32m//		String result = "";[m
+[32m+[m[32m//		HttpClient client = HttpClientBuilder.create().build();[m
+[32m+[m[32m//		HttpPost post = new HttpPost(gettokenapiURL);[m
+[32m+[m[32m//		Map<String, String> m = new HashMap<String, String>();[m
+[32m+[m[32m//[m
+ //		try {[m
+[31m-//			memberService.insertMembership(vo);[m
+[31m-//			session.setAttribute("userId", id);[m
+[31m-//			return "/mainhome.jsp";[m
+[32m+[m[32m//[m
+[32m+[m[32m//			//이제 서버에 보낼 데이터를 세팅한다.[m
+[32m+[m[32m//			// 물론 api서버에서 form 으로보내라 json으로 보내라는 해당 제공 api서버를 봐야한다.[m
+[32m+[m[32m//			//단 지금은 필요 없어서 주석 처리한다.[m
+[32m+[m[32m//			//post.setEntity(new UrlEncodedFormEntity(convertParameter(m)));[m
+[32m+[m[32m//[m[41m			[m
+[32m+[m[32m//			// client.excute(POST) 가 외부로 전송 하는건데[m
+[32m+[m[32m//			HttpResponse res = client.execute(post);[m
+[32m+[m[32m//[m[41m			[m
+[32m+[m[32m//			ObjectMapper mapper = new ObjectMapper();[m
+[32m+[m[32m//[m
+[32m+[m[32m//			String infoheader = EntityUtils.toString(res.getEntity());[m[41m	[m
+[32m+[m[32m//[m[41m			[m
+[32m+[m[32m//[m[41m			[m
+[32m+[m[32m//			JsonNode rootNode = mapper.readTree(infoheader);[m
+[32m+[m[32m//			String INFOHEADER = mapper.writeValueAsString(rootNode);[m
+[32m+[m[32m//[m[41m		[m
+[32m+[m[32m//			JsonNode resNode = rootNode.get("access_token");[m
+[32m+[m[32m//			String token = mapper.writeValueAsString(resNode);[m
+[32m+[m[32m//			System.out.println("네이버의 응답 토큰->>"+token);[m
+[32m+[m[32m//[m[41m			[m
+[32m+[m[32m//			isExistInfo(vo, token, response, req);[m
+ //[m
+ //		} catch (Exception e) {[m
+ //			e.printStackTrace();[m
+[31m-//			System.out.println("내가 뜨면 프라이머리키 위배로 데이터삽입 오류");[m
+ //		}[m
+ //[m
+[31m-//		return "/naverlogin.do";[m
+[32m+[m[32m//		// 오류일시 어짜피 네이버측에서 메세지에 인증 실패라 떠서[m
+[32m+[m[32m//		// 문자열 "error" 를 준뒤[m
+[32m+[m[32m//		// 호출한 함수에서 조건문 분기로 처리하는 용도이다.[m
+[32m+[m[32m//[m
+[32m+[m[32m//	}[m
+[32m+[m[32m//[m
+[32m+[m[32m//	//네이버회원 정보 조회 API를 받아오는 일반 메소드[m
+[32m+[m[32m//	public void isExistInfo(UserVO vo, String token, HttpServletResponse res, HttpServletRequest req)[m
+[32m+[m[32m//			throws IOException {[m
+[32m+[m[32m//[m
+[32m+[m[32m//		// 아오 "Bearer " 이렇게 공백=스페이스바 한칸 추가 해야 인식하네[m
+[32m+[m[32m//		String header = "Bearer " + token;[m
+[32m+[m[32m//		// System.out.println("header 가 널이 아니길->>"+header);[m
+[32m+[m[32m//[m[41m		[m
+[32m+[m[32m//		Map<String, String> requestHeaders = new HashMap<>();[m
+[32m+[m[32m//		requestHeaders.put("Authorization", header);[m
+[32m+[m[32m//[m
+[32m+[m[32m//		String responseBody = get(infoURL, requestHeaders);[m
+[32m+[m[32m//[m
+[32m+[m[32m//		// System.out.println("리스펀스바디 타입:->>"+responseBody);[m
+[32m+[m[32m//[m
+[32m+[m[32m//		ObjectMapper mapper = new ObjectMapper();[m
+[32m+[m[32m//[m
+[32m+[m[32m//		//readTree: 문자열을 자바가 알아쳐먹는 JSON형태로 바꿔준다.[m
+[32m+[m[32m//		JsonNode clientinfo = mapper.readTree(responseBody);[m
+[32m+[m[32m//[m
+[32m+[m[32m////{"resultcode":"00","message":"success","response":{"id":"rQE_RsS0i5F8jxIgoh88swhDV1UZerijF96octiN2aM","nickname":"입실론극혐","profile_image":"https://ssl.pstatic.net/static/pwe/address/img_profile.png","age":"30-39","gender":"M","email":"younggoo7000@naver.com","mobile":"010-9313-0686","mobile_e164":"+821093130686","name":"신원찬","birthday":"11-05","birthyear":"1991"}}[m[41m	[m
+[32m+[m[32m//		//System.out.println(clientinfo);[m[41m		[m
+[32m+[m[32m//[m[41m		[m
+[32m+[m[32m//		JsonNode response = clientinfo.get("response");[m[41m		[m
+[32m+[m[32m//		JsonNode responseid = response.get("id");[m
+[32m+[m[32m//		JsonNode responsemobile = response.get("mobile");[m
+[32m+[m[32m//		JsonNode responsemoname = response.get("name");[m
+[32m+[m[32m//[m
+[32m+[m[32m//[m
+[32m+[m[32m//		// 설명하기 어려운데[m
+[32m+[m[32m//		// 제이슨이 문자열을 "" 로 감싸서 가져와[m
+[32m+[m[32m//		// 나중 제이에스티엘에서 인식을 못해 쌍따옴표 제거해둠 이것때문에 1시간 날림 ㅠ[m
+[32m+[m[32m//[m[41m		[m
+[32m+[m[32m//		String str1 = mapper.writeValueAsString(responseid);[m
+[32m+[m[32m//		String str2 = mapper.writeValueAsString(responsemobile);[m
+[32m+[m[32m//		String str3 = mapper.writeValueAsString(responsemoname);[m
+[32m+[m[32m//		System.out.println("str1: "+str1);[m
+[32m+[m[32m//		System.out.println("str2: "+str2);[m
+[32m+[m[32m//		System.out.println("str3: "+str3);[m
+[32m+[m[32m//[m[41m		[m
+[32m+[m[32m//[m[41m		[m
+[32m+[m[32m//		String id = str1.replaceAll("\"", "");[m
+[32m+[m[32m//		String mobile = str2.replaceAll("\"", "");[m
+[32m+[m[32m//		String name = str3.replaceAll("\"", "");[m
+[32m+[m[32m//[m
+[32m+[m[32m//		vo.setId(id);[m
+[32m+[m[32m//		vo.setUser_tell(mobile);[m
+[32m+[m[32m//		vo.setUser_name(name);[m
+[32m+[m[32m//		vo.setPassword("불필요");[m
+[32m+[m[32m//		vo.setUser_where("naveruser");[m
+[32m+[m[32m//		// vo 완벽히 수정후 에트리뷰트는 주석처리한다.[m
+[32m+[m[32m//		req.setAttribute("naver_id", "yes");[m
+[32m+[m[32m//		req.setAttribute("id", id);[m
+[32m+[m[32m//		req.setAttribute("mobile", mobile);[m
+[32m+[m[32m//		req.setAttribute("name", name);[m
+[32m+[m[32m//		req.setAttribute("UserVO", vo);[m
+[32m+[m[32m//		RequestDispatcher rds = req.getRequestDispatcher("/navercheckid.do");[m
+[32m+[m[32m//		try {[m
+[32m+[m[32m//			rds.forward(req, res);[m
+[32m+[m[32m//		} catch (ServletException | IOException e) {[m
+[32m+[m[32m//			// TODO Auto-generated catch block[m
+[32m+[m[32m//			e.printStackTrace();[m
+[32m+[m[32m//		}[m
+[32m+[m[32m//[m
+[32m+[m[32m//	}[m
+[32m+[m[32m//[m
+[32m+[m[32m//	private static String get(String infoURL, Map<String, String> requestHeaders) {[m
+[32m+[m[32m////		HttpURLConnection은 ?[m
+[32m+[m[32m////		URL 내용을 읽어오거나 , URL에 GET,POST 방식으로 데이터를 전달할 때 사용한다.[m
+[32m+[m[32m//		HttpURLConnection con = connect(infoURL);[m
+[32m+[m[32m//		System.out.println("get 메소드속 requestHeaders");[m
+[32m+[m[32m//		System.out.println(requestHeaders);[m
+[32m+[m[32m//		try {[m
+[32m+[m[32m//			con.setRequestMethod("GET");[m
+[32m+[m[32m//			for (Map.Entry<String, String> header : requestHeaders.entrySet()) {[m
+[32m+[m[32m//				con.setRequestProperty(header.getKey(), header.getValue());[m
+[32m+[m[32m//			}[m
+[32m+[m[32m//[m
+[32m+[m[32m//			int responseCode = con.getResponseCode();[m
+[32m+[m[32m//			System.out.println("responseCode 는 연결상태로 뭐가 찍히려나->>" + responseCode);[m
+[32m+[m[32m//			System.out.println("HttpURLConnection.HTTP_OK->>>" + HttpURLConnection.HTTP_OK);[m
+[32m+[m[32m//[m
+[32m+[m[32m//			if (responseCode == HttpURLConnection.HTTP_OK) { // 정상 호출[m
+[32m+[m[32m//				System.out.println("con.getInputStream()는????");[m
+[32m+[m[32m//				System.out.println(con.getInputStream());[m
+[32m+[m[32m//[m[41m				[m
+[32m+[m[32m//				//변수수정을 위해 잠시 메서드 readBody 복사함 메서드 이름은 readBody를 복사한 readBody2로 복사함[m
+[32m+[m[32m//				// 따라서 return readBody(con.getInputStream()); 는 잠시 주석처리함[m
+[32m+[m[32m//				return readBody2(con);[m
+[32m+[m[32m//				//return readBody(con.getInputStream());[m
+[32m+[m[32m//			} else { // 에러 발생[m
+[32m+[m[32m//				return readBody(con.getErrorStream());[m
+[32m+[m[32m//			}[m
+[32m+[m[32m//		} catch (IOException e) {[m
+[32m+[m[32m//			throw new RuntimeException("API 요청과 응답 실패", e);[m
+[32m+[m[32m//		} finally {[m
+[32m+[m[32m//			con.disconnect();[m
+[32m+[m[32m//		}[m
+[32m+[m[32m//	}[m
+[32m+[m[32m//[m
+[32m+[m[32m//[m[41m	[m
+[32m+[m[32m//	private static HttpURLConnection connect(String apiUrl) {[m
+[32m+[m[32m//		try {[m
+[32m+[m[32m//			URL url = new URL(apiUrl);[m
+[32m+[m[32m//			return (HttpURLConnection) url.openConnection();[m
+[32m+[m[32m//		} catch (MalformedURLException e) {[m
+[32m+[m[32m//			throw new RuntimeException("API URL이 잘못되었습니다. : " + apiUrl, e);[m
+[32m+[m[32m//		} catch (IOException e) {[m
+[32m+[m[32m//			throw new RuntimeException("연결이 실패했습니다. : " + apiUrl, e);[m
+[32m+[m[32m//		}[m
+[32m+[m[32m//	}[m
+[32m+[m[32m//[m
+[32m+[m[32m//	//변수수정을 위해 잠시 메서드 readBody 복사함 메서드 이름은 readBody를 복사한 readBody2로 복사함[m
+[32m+[m[32m//	private static String readBody2(HttpURLConnection con) throws IOException {[m
+[32m+[m[32m//[m[41m		[m
+[32m+[m[32m//		InputStream in =con.getInputStream();[m[41m		[m
+[32m+[m[32m//		//InputStream 는 아스키코드(바이트)를 번역해야 하는데[m
+[32m+[m[32m//		//InputStreamReader InputStream를 인수로 받아 바이트를 문자단위로 변환해준다..!![m[41m [m
+[32m+[m[32m//		InputStreamReader ins = new InputStreamReader(in);[m
+[32m+[m[32m//[m[41m		[m
+[32m+[m[32m//		try (BufferedReader buffer = new BufferedReader(ins)) {[m
+[32m+[m[32m//			StringBuilder responseBody = new StringBuilder();[m[41m			[m
+[32m+[m[32m//			String bodydata;[m
+[32m+[m[32m//			while ((bodydata = buffer.readLine()) != null) {[m[41m				[m
+[32m+[m[32m//				responseBody.append(bodydata);[m
+[32m+[m[32m//			}[m[41m		[m
+[32m+[m[32m//			return responseBody.toString();[m
+[32m+[m[32m//		} catch (IOException e) {[m
+[32m+[m[32m//			throw new RuntimeException("API 응답을 읽는데 실패했습니다.", e);[m
+[32m+[m[32m//		}[m
+[32m+[m[32m//	}[m
+[32m+[m[32m//[m[41m	[m
+[32m+[m[32m//[m[41m	[m
+[32m+[m[32m//[m[41m	[m
+[32m+[m[32m//[m[41m	[m
+[32m+[m[32m//[m[41m	[m
+[32m+[m[32m//[m[41m	[m
+[32m+[m[32m//	private static String readBody(InputStream body) {[m
+[32m+[m[32m//		InputStreamReader streamReader = new InputStreamReader(body);[m
+[32m+[m[32m//		System.out.println("body 값은?");[m
+[32m+[m[32m//		System.out.println(body);[m
+[32m+[m[32m//		System.out.println("streamReader 값은?");[m
+[32m+[m[32m//		System.out.println(streamReader);[m
+[32m+[m[32m//[m
+[32m+[m[32m//		try (BufferedReader lineReader = new BufferedReader(streamReader)) {[m
+[32m+[m[32m//			StringBuilder responseBody = new StringBuilder();[m
+[32m+[m[32m//			System.out.println("lineReader눈?");[m
+[32m+[m[32m//			System.out.println(lineReader);[m
+[32m+[m[32m//			String line;[m
+[32m+[m[32m//			while ((line = lineReader.readLine()) != null) {[m
+[32m+[m[32m//				System.out.println("lineReader.readLine()는???");[m
+[32m+[m[32m//				System.out.println(line);[m
+[32m+[m[32m//				responseBody.append(line);[m
+[32m+[m[32m//			}[m
+[32m+[m[32m//			System.out.println("리턴직전 responseBody");[m
+[32m+[m[32m//			System.out.println(responseBody);[m
+[32m+[m[32m//			return responseBody.toString();[m
+[32m+[m[32m//		} catch (IOException e) {[m
+[32m+[m[32m//			throw new RuntimeException("API 응답을 읽는데 실패했습니다.", e);[m
+[32m+[m[32m//		}[m
+[32m+[m[32m//	}[m
+[32m+[m[32m//[m
+[32m+[m[32m//	// 네이버 회원 API호출후 이미 가입된 회원이면 로그인 아니라면 회원가입 시키는 메소드[m
+[32m+[m[32m//	@RequestMapping(value = "/navercheckid.do")[m
+[32m+[m[32m//	public String naverMembershipCheck(UserVO vo, HttpSession session, HttpServletRequest req) throws Exception {[m
+[32m+[m[32m//[m
+[32m+[m[32m//		System.out.println("디스페쳐로 UserVO오 넘어온거 확인" + req.getAttribute("UserVO"));[m
+[32m+[m[32m//		vo = (UserVO) req.getAttribute("UserVO");[m
+[32m+[m[32m//		System.out.println("아이디는?" + vo.getId());[m
+[32m+[m[32m//		System.out.println("핸드폰번호는?" + vo.getUser_tell());[m
+[32m+[m[32m//		System.out.println("이름은?" + vo.getUser_name());[m
+[32m+[m[32m////		System.out.println("네이버컨트롤로에서 디스페쳐로  일로 발급받은 아이디가  와졌니?" + req.getAttribute("id"));[m
+[32m+[m[32m////		System.out.println("네이버컨트롤로에서 디스페쳐로  일로 발급받은 핸드폰  와졌니?" + req.getAttribute("mobile"));[m
+[32m+[m[32m////		System.out.println("네이버컨트롤로에서 디스페쳐로  일로 발급받은 이  와졌니?" + req.getAttribute("name"));[m
+[32m+[m[32m//		String id = vo.getId();[m
+[32m+[m[32m//[m
+[32m+[m[32m//[m
+[32m+[m[32m//		boolean check = memberService.checkidMembership(vo);[m
+[32m+[m[32m//		System.out.println("투르 뜨면 회원 가입시킴" + check);[m
+[32m+[m[32m//		if (check) {[m
+[32m+[m[32m//			try {[m
+[32m+[m[32m//				memberService.insertMembership(vo);[m
+[32m+[m[32m//				 Integer user_code= memberService.selectusercode(vo);[m
+[32m+[m[32m//				session.setAttribute("userId", id);[m
+[32m+[m[32m//				session.setAttribute("user_code",user_code);[m
+[32m+[m[32m//				return "/mainhome.jsp";[m
+[32m+[m[32m//[m
+[32m+[m[32m//			} catch (Exception e) {[m
+[32m+[m[32m//				e.printStackTrace();[m
+[32m+[m[32m//				System.out.println("내가 뜨면 프라이머리키 위배로 데이터삽입 오류");[m
+[32m+[m[32m//				req.setAttribute("err","err");[m
+[32m+[m[32m//				return "/login.jsp";			}[m
+[32m+[m[32m//[m
+[32m+[m[32m//[m
+[32m+[m[32m//		} else {[m
+[32m+[m[32m//			System.out.println("펠스뜨면 바로 로그인처리" + check);[m
+[32m+[m[32m//			 Integer user_code= memberService.selectusercode(vo);[m
+[32m+[m[32m//			session.setAttribute("userId", vo.getId());[m
+[32m+[m[32m//			session.setAttribute("user_code", user_code);[m[41m			[m
+[32m+[m[32m//			return "/mainhome.jsp";[m
+[32m+[m[32m//		}[m
+[32m+[m[32m//[m
+[32m+[m[32m//	} // 네이버로그인 후 이미 가입된 회원인지 함수 종료[m
+[32m+[m[32m//[m
+[32m+[m[32m//[m[41m	[m
+[32m+[m[32m//		// Map의 중첩  스테틱 인터페이스 인 interface Entry<K, V> {각종 필드 key value 등등}[m
+[32m+[m[32m//		// 을 entrySet() 으로  타입 Set<Entry<String, String>> 를 가져온뒤[m
+[32m+[m[32m//		List<NameValuePair> convertParameter(Map<String, String> paramMap) {[m
+[32m+[m[32m//[m[41m			[m
+[32m+[m[32m//			System.out.println("paramMap: "+paramMap.toString());[m
+[32m+[m[32m//[m[41m			[m
+[32m+[m[32m//[m[41m			[m
+[32m+[m[32m//			List<NameValuePair> paramList = new ArrayList<NameValuePair>();[m
+[32m+[m[32m//			Set<Entry<String, String>> entries = paramMap.entrySet();[m
+[32m+[m[32m//			/*[m
+[32m+[m[32m//			 * Set Interface -> 순서X 중복X     Set 인터페이스는 중복 요소를 포함할 수 없으며 랜덤 액세스를 허용하지않아[m
+[32m+[m[32m//			 * iterator 또는 foreach를 이용하여 요소를 탐색할 수 있다. 현재 내용이 어렵지[m
+[32m+[m[32m//			 *[m[41m [m
+[32m+[m[32m//			 */[m
+[32m+[m[32m//			for (Entry<String, String> entry : entries) {[m
+[32m+[m[32m//				paramList.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));[m
+[32m+[m[32m//			}[m
+[32m+[m[32m//			System.out.println("paramList: "+paramList);[m
+[32m+[m[32m//			return paramList;[m
+[32m+[m[32m//		}[m
+[32m+[m[32m//[m[41m	[m
+[32m+[m[32m//[m[41m	[m
+[32m+[m[32m//[m[41m	[m
+[32m+[m[32m//[m[41m	[m
+[32m+[m[32m//[m[41m	[m
+[32m+[m[32m//[m[41m	[m
+[32m+[m[32m//[m[41m	[m
+[32m+[m[32m////	// 네이버로그인후 자동 회원가입시도함수[m
+[32m+[m[32m////	@RequestMapping(value = "/insertNaverMembership.do")[m
+[32m+[m[32m////	public String insertNaverMembership(UserVO vo, HttpSession session, HttpServletRequest req) throws Exception {[m
+[32m+[m[32m////		// 네이버 가입자는 패스워드 필요없어서 지움[m
+[32m+[m[32m//////		System.out.println("req id->>" + req.getParameter("id"));[m
+[32m+[m[32m////		String id = req.getParameter("id");[m
+[32m+[m[32m//////		System.out.println("id를 못가져오나" + vo.getId());[m
+[32m+[m[32m////		vo.setUser_where("naveruser");[m
+[32m+[m[32m//////		vo.setNaver_id("네이버이용자");[m
+[32m+[m[32m////		vo.setUser_name("미기입");[m
+[32m+[m[32m////		vo.setPassword("불필요");[m
+[32m+[m[32m////		try {[m
+[32m+[m[32m////			memberService.insertMembership(vo);[m
+[32m+[m[32m////			session.setAttribute("userId", id);[m
+[32m+[m[32m////			return "/mainhome.jsp";[m
+[32m+[m[32m////[m
+[32m+[m[32m////		} catch (Exception e) {[m
+[32m+[m[32m////			e.printStackTrace();[m
+[32m+[m[32m////			System.out.println("내가 뜨면 프라이머리키 위배로 데이터삽입 오류");[m
+[32m+[m[32m////		}[m
+[32m+[m[32m////[m
+[32m+[m[32m////		return "/naverlogin.do";[m
+[32m+[m[32m////[m
+[32m+[m[32m////	}// 네이버로그인후 회원가입 종료[m
+ //[m
+[31m-//	}// 네이버로그인후 회원가입 종료[m
+[31m-[m
+[31m-	// 네이버가입자 로그인시도시작[m
+[31m-//	@RequestMapping(value = "/naverlogin.do")[m
+[31m-//	public String naverlogin(UserVO vo, HttpSession session, HttpServletRequest req) throws Exception {[m
+[32m+[m[32m//	// 네이버가입자 로그인시도시작[m
+[32m+[m[32m////	@RequestMapping(value = "/naverlogin.do")[m
+[32m+[m[32m////	public String naverlogin(UserVO vo, HttpSession session, HttpServletRequest req) throws Exception {[m
+[32m+[m[32m////[m
+[32m+[m[32m////		session.setAttribute("userId", vo.getId());[m
+[32m+[m[32m////		System.out.println("네이버로그인자는 세션어트리뷰트가지금 널임?" + vo.getId());[m
+[32m+[m[32m////		return "worklist.jsp";[m
+[32m+[m[32m////[m
+[32m+[m[32m////	}// 네이버가입자 로그인시도 종료[m
+ //[m
+[31m-//		session.setAttribute("userId", vo.getId());[m
+[31m-//		System.out.println("네이버로그인자는 세션어트리뷰트가지금 널임?" + vo.getId());[m
+[31m-//		return "worklist.jsp";[m
+[32m+[m[32m//[m[41m	[m
+ //[m
+[31m-//	}// 네이버가입자 로그인시도 종료[m
+[31m-[m
+[31m-	[m
+[31m-[m
+[31m-}[m
+[32m+[m[32m//}[m
+[1mdiff --git a/final3/finall3/src/main/resources/mappings/login-mapping.xml b/final3/finall3/src/main/resources/mappings/login-mapping.xml[m
+[1mindex 7e2e214..3c4a4dd 100644[m
+[1m--- a/final3/finall3/src/main/resources/mappings/login-mapping.xml[m
+[1m+++ b/final3/finall3/src/main/resources/mappings/login-mapping.xml[m
+[36m@@ -27,6 +27,7 @@[m
+ [m
+ [m
+ 	<!-- insert into user values(#{id},#{password}) -->[m
+[32m+[m	[32m<!-- 한편 네이버 정보로 가입시킬시는 password 컬럼에 불필요란 갑을 넣고있다. -->[m
+ 	<insert id="insertmember" parameterType="userVO"[m
+ 		useGeneratedKeys="true" keyProperty="user_code">[m
+ [m
+[36m@@ -60,7 +61,9 @@[m
+ [m
+ [m
+ [m
+[31m-[m
+[32m+[m[32m<!--네이버 회원 전용 메서드이다. 주의할건[m
+[32m+[m[32m네이버가 준 회원의 아이디는 유일하며, 현재 네이버에서 받은 유일한 아이디로만 톰캣사이트에서  기회원인지 판단 가능하다.[m
+[32m+[m[32m-->[m
+ 	<select id="checkidMembership" resultType="userVO">[m
+ [m
+ 		select * from user[m
+[1mdiff --git a/final3/finall3/src/main/webapp/getboardlist2.jsp b/final3/finall3/src/main/webapp/getboardlist2.jsp[m
+[1mindex 42eb006..e18eb69 100644[m
+[1m--- a/final3/finall3/src/main/webapp/getboardlist2.jsp[m
+[1m+++ b/final3/finall3/src/main/webapp/getboardlist2.jsp[m
+[36m@@ -26,7 +26,14 @@[m
+ 	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="[m
+ 	crossorigin="anonymous"></script>[m
+ <style>[m
+[31m-a {    color: #0275d8;[m
+[32m+[m[32m.mobileheader {[m
+[32m+[m	[32mdisplay: none;[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m
+[32m+[m[32ma {[m
+[32m+[m
+[32m+[m	[32mcolor: black !important;[m
+ 	text-decoration: none !important;[m
+ }[m
+ [m
+[36m@@ -34,8 +41,6 @@[m [ma:visited {[m
+ 	text-decoration: none;[m
+ }[m
+ [m
+[31m-[m
+[31m-[m
+ .mobileheader {[m
+ 	display: nonel;[m
+ }[m
+[36m@@ -49,65 +54,6 @@[m [mli {[m
+ 	list-style: none;[m
+ }[m
+ [m
+[31m-.menunave {[m
+[31m-	margin-right: auto;[m
+[31m-	margin-left: auto;[m
+[31m-	max-width: 1050px;[m
+[31m-	color: white;[m
+[31m-	background: #1a73e8;[m
+[31m-	font-size: 16px;[m
+[31m-	font-weight: 500;[m
+[31m-	background-color: #000;[m
+[31m-}[m
+[31m-[m
+[31m-.nave {[m
+[31m-	display: flex;[m
+[31m-	justify-content: space-between;[m
+[31m-	margin-right: auto;[m
+[31m-	margin-left: auto;[m
+[31m-	max-width: 1050px;[m
+[31m-	color: black;[m
+[31m-	/*   background: #1a73e8; */[m
+[31m-	font-size: 13px;[m
+[31m-	font-weight: 600;[m
+[31m-}[m
+[31m-[m
+[31m-.homeicon {[m
+[31m-	background-image: url('./img_icon/homeicon.png');[m
+[31m-	background-position: center;[m
+[31m-	background-repeat: no-repeat;[m
+[31m-	background-attachment: scroll;[m
+[31m-	background-size: cover;[m
+[31m-	width: 40px;[m
+[31m-	height: 39.5px;[m
+[31m-}[m
+[31m-[m
+[31m-.nave ul {[m
+[31m-	display: flex;[m
+[31m-	flex-direction: row;[m
+[31m-	justify-content: end;[m
+[31m-}[m
+[31m-[m
+[31m-.menunave .menulist {[m
+[31m-	overflow: hidden;[m
+[31m-	text-overflow: ellipsis;[m
+[31m-	justify-content: space-between;[m
+[31m-	display: flex;[m
+[31m-	flex-direction: row;[m
+[31m-}[m
+[31m-[m
+[31m-.nave li {[m
+[31m-	padding: 10px 10px;[m
+[31m-}[m
+[31m-[m
+[31m-.menunave .menulistcontent {[m
+[31m-	height: 100%;[m
+[31m-	background-color: #f4f4f4;[m
+[31m-	color: #000;[m
+[31m-	padding: 20px 20px;[m
+[31m-	color: #000;[m
+[31m-}[m
+[31m-[m
+ .writing {[m
+ 	max-width: 1050px;[m
+ 	margin: auto;[m
+[36m@@ -203,23 +149,18 @@[m [mth, td {[m
+ }[m
+ [m
+ @media screen and (max-width: 701px) {[m
+[31m-	.nave {[m
+[31m-		display: none !important;[m
+[32m+[m
+[32m+[m	[32m#navebarwrapper {[m
+[32m+[m[41m	[m
+[32m+[m		[32mdisplay: none;[m
+ 	}[m
+[32m+[m[41m	[m
+ 	.mobileheader {[m
+ 		display: block;[m
+ 	}[m
+ 	.writing a {[m
+ 		padding: 10px 10px;[m
+ 	}[m
+[31m-	.menunave {[m
+[31m-		max-width: 450px;[m
+[31m-	}[m
+[31m-	.menulistcontent {[m
+[31m-		white-space: nowrap;[m
+[31m-		max-height: 64px;[m
+[31m-		padding: 10px !important;[m
+[31m-	}[m
+ 	.rwd-table {[m
+ 		max-width: 450px;[m
+ 	}[m
+[36m@@ -368,14 +309,10 @@[m [mvar nextpage;[m
+ var backpage;[m
+ [m
+ var startbtn;[m
+[31m-var endbtn;		[m
+[31m-	[m
+[31m-	[m
+[31m-	[m
+[32m+[m[32mvar endbtn;[m
+ 	[m
+ 	window.onload=()=>{			[m
+ 		[m
+[31m-		[m
+ 		$("td[class=title]").on("click",(e)=>{				[m
+ 			let seq=$(e.target)[0].getAttribute("value");[m
+ 			window.location.href="reading.jsp?seq="+seq;	[m
+[36m@@ -383,45 +320,8 @@[m [mvar endbtn;[m
+ 		//리턴 펠스는 상위 전파를 막아주는 기능이란다..[m
+ 		 return false ;		[m
+ 			[m
+[31m-		})[m
+[31m-		[m
+[31m-		[m
+[31m-		[m
+[31m-		[m
+[31m-		let menulistcontent=$("div[class='menulistcontent']");[m
+[31m-	 	for(let k=1; k<menulistcontent.length; k++){			[m
+[31m-			$(menulistcontent[k]).css({"background-color":"#000", "color":"rgba(255, 255, 255, .5)"})		[m
+[31m-		} 		[m
+[31m-		/* 게씨발 하위 a 링크때문에 이벤트 전파가 되어 이상하게 적용된줄알음 이벤트 전파 막자...  */[m
+[31m-		$("div[class='menulistcontent']").on("click",(e)=>{[m
+[31m-			[m
+[31m-			[m
+[31m-			for(let k=0; k<menulistcontent.length; k++){[m
+[31m-				[m
+[31m-				if($(e.target).text()==$(menulistcontent[k]).text()){[m
+[31m-					$(menulistcontent[k]).css({"background-color":"#f4f4f4", "color":"#000"   })	[m
+[31m-					[m
+[31m-				}else{[m
+[31m-			  [m
+[31m-					$(menulistcontent[k]).css({"background-color":"rgb(0, 0, 0)", "color":"rgba(255, 255, 255, 0.5)"})	[m
+[31m-				}[m
+[31m-				[m
+[31m-				[m
+[31m-				[m
+[31m-				[m
+[31m-				/* console.log(e.target);[m
+[31m-				console.log(menulistcontent[k]); */[m
+[31m-			}[m
+[31m-			[m
+[31m-		[m
+[31m-			[m
+[31m-			[m
+[31m-			[m
+[31m-		})[m
+[31m-		[m
+[31m-		[m
+[32m+[m		[32m})[m[41m		[m
+ 		[m
+[31m-		smartphone();[m
+ 		[m
+ 		//개별 버튼 페이지 게시글[m
+ 		// select * from board limit  버튼태그 벨류, 10[m
+[36m@@ -538,68 +438,18 @@[m [mvar endbtn;[m
+ 			[m
+ 	}//윈도우 온로드 종료	[m
+ [m
+[31m-function smartphone(){[m
+[31m-		[m
+[31m-	document.getElementById("menulist").addEventListener("touchstart", successtouchmove, false);[m
+[31m-		[m
+[31m-	}	[m
+[31m-	[m
+[31m-	function successtouchmove(smartEvent){[m
+[31m-		console.log(smartEvent.target)[m
+[31m-	}[m
+[32m+[m
+ 	[m
+ 	[m
+ 	[m
+ </script>[m
+ </head>[m
+ <body>[m
+[31m-[m
+[31m-	<div class="nave">[m
+[31m-		<a href="mainhome.jsp">[m
+[31m-			<div class="homeicon"></div>[m
+[31m-		</a>[m
+[31m-		<div>[m
+[31m-			<ul>[m
+[31m-				<c:choose>[m
+[31m-					<c:when test="${userId ne null || user_where=='finalluser'}">[m
+[31m-						<li><c:if test="${user_where=='finalluser'}">[m
+[31m-								<a href="myinfo.jsp">정보수정</a>[m
+[31m-							</c:if></li>[m
+[31m-						<li><a href="cartlist.do?id=${userId}">장바구니</a></li>[m
+[31m-						<li><a href="myreserveinfo.do?user_code=${user_code}">나의예약현황</a></li>[m
+[31m-						<li><a href="logout.do">로그아웃</a></li>[m
+[31m-					</c:when>[m
+[31m-					<c:otherwise>[m
+[31m-						<li><a href="login.jsp">로그인</a></li>[m
+[31m-						<li><a href="phonesms.jsp">가입</a></li>[m
+[31m-					</c:otherwise>[m
+[31m-[m
+[31m-				</c:choose>[m
+[31m-[m
+[31m-			</ul>[m
+[31m-		</div>[m
+[31m-	</div>[m
+[32m+[m	[32m<%@ include file="/pcNave.jsp"%>[m
+ 	<%@ include file="/mobileNave.jsp"%>[m
+[31m-	<div class="menunave">[m
+[31m-		<div id="menulist" class="menulist">[m
+[31m-			<div class="menulistcontent">[m
+[31m-				<a href="firstgetboad.do?startpage=0">자유로운게시판</a>[m
+[31m-			</div>[m
+[31m-			<div class="menulistcontent">[m
+[31m-				<a>원데이클래스</a>[m
+[31m-			</div>[m
+[31m-			<div class="menulistcontent">[m
+[31m-				<a>미술용품</a>[m
+[31m-			</div>[m
+[31m-			<div class="menulistcontent">[m
+[31m-				<a>회원작품목록</a>[m
+[31m-			</div>[m
+[31m-[m
+[31m-		</div>[m
+[31m-	</div>[m
+[31m-[m
+ 	<div class="container">[m
+[31m-		<h3>자유게시판</h3>[m
+[32m+[m[41m	[m
+[32m+[m		[32m<h3>질문/자유게시판</h3>[m
+ 		<div class="writing">[m
+ 			<c:if test="${userId ne null}">[m
+ 				<a href="writeboard.jsp">글작성</a>[m
+[1mdiff --git a/final3/finall3/src/main/webapp/login.jsp b/final3/finall3/src/main/webapp/login.jsp[m
+[1mindex daeb808..167b118 100644[m
+[1m--- a/final3/finall3/src/main/webapp/login.jsp[m
+[1m+++ b/final3/finall3/src/main/webapp/login.jsp[m
+[36m@@ -211,7 +211,6 @@[m [mh3 {[m
+ <script>[m
+ 	window.onload = function() {[m
+ 		$("#naver").click(function() {[m
+[31m-[m
+ 			location.href = "naverloginform.do"[m
+ 		})[m
+ [m
+[1mdiff --git a/final3/finall3/src/main/webapp/mainhome.jsp b/final3/finall3/src/main/webapp/mainhome.jsp[m
+[1mindex 64db347..1b7f2cb 100644[m
+[1m--- a/final3/finall3/src/main/webapp/mainhome.jsp[m
+[1m+++ b/final3/finall3/src/main/webapp/mainhome.jsp[m
+[36m@@ -27,40 +27,38 @@[m
+ 	display: none;[m
+ }[m
+ [m
+[31m-[m
+[31m-[m
+[31m-[m
+[32m+[m[32m.firstgetboad {[m
+[32m+[m	[32mborder-radius: 10px;[m
+[32m+[m	[32mcolor: white;[m
+[32m+[m	[32mborder: 1px solid;[m
+[32m+[m	[32mbackground-color: rgb(255, 88, 98);[m
+[32m+[m[32m}[m
+ [m
+ @media screen and (max-width: 701px) {[m
+[31m-[m
+[31m-html,body{[m
+[31m-[m
+[31m-max-width: 344px !important;[m
+[31m-margin: 0px auto !important;[m
+[31m-padding:0px 0px!important;[m
+[31m-}	[m
+[32m+[m	[32mhtml, body {[m
+[32m+[m		[32mmax-width: 344px !important;[m
+[32m+[m		[32mmargin: 0px auto !important;[m
+[32m+[m		[32mpadding: 0px 0px !important;[m
+[32m+[m	[32m}[m
+ [m
+ 	/* .nave ul {[m
+ 		display: flex;[m
+ 		flex-direction: row;[m
+ 		justify-content: end;[m
+ 	} */[m
+[31m-	[m
+[31m-	a {    color: #0275d8;[m
+[31m-	text-decoration: none !important;[m
+[31m-}[m
+[31m-[m
+[31m-a:visited {[m
+[31m-	text-decoration: none;[m
+[31m-}[m
+[31m-	[m
+[32m+[m	[32ma {[m
+[32m+[m		[32mcolor: #0275d8;[m
+[32m+[m		[32mtext-decoration: none !important;[m
+[32m+[m	[32m}[m
+[32m+[m	[32ma:visited {[m
+[32m+[m		[32mtext-decoration: none;[m
+[32m+[m	[32m}[m
+ 	.allwrapper {[m
+ 		display: none;[m
+ 	}[m
+ 	.mobileallwrapper {[m
+ 		display: block;[m
+ 	}[m
+[31m-	[m
+ 	.center {[m
+ 		display: flex;[m
+ 		flex-direction: column;[m
+[36m@@ -219,8 +217,6 @@[m [ma:visited {[m
+ 		font-size: 12px;[m
+ 	}[m
+ } /* 반응형종료 */[m
+[31m-[m
+[31m-[m
+ .allwrapper {[m
+ 	height: 100%;[m
+ 	position: relative;[m
+[36m@@ -242,19 +238,16 @@[m [mli {[m
+ 	font-weight: 300;[m
+ }[m
+  */[m
+[31m-  [m
+[31m-  [m
+[31m-  .headerarea{[m
+[31m-  background-image: url('./img_mainhome/banner1.jpeg');[m
+[32m+[m[32m.headerarea {[m
+[32m+[m	[32mbackground-image: url('./img_mainhome/banner1.jpeg');[m
+ 	background-color: aqua;[m
+ 	background-position: center;[m
+ 	background-repeat: no-repeat;[m
+ 	background-attachment: scroll;[m
+ 	background-size: cover;[m
+ 	height: 100%;[m
+[31m-  }[m
+[31m- 	[m
+[31m-  [m
+[32m+[m[32m}[m
+[32m+[m
+ /* .item_bg {[m
+ 	background-image: url('./img_mainhome/banner1.jpeg');[m
+ 	background-color: aqua;[m
+[36m@@ -264,7 +257,6 @@[m [mli {[m
+ 	background-size: cover;[m
+ 	height: 100%;[m
+ } */[m
+[31m-[m
+ .spacingcenter {[m
+ 	margin-top: 60px;[m
+ 	margin-bottom: 60px;[m
+[36m@@ -384,7 +376,6 @@[m [mli {[m
+ 	display: flex;[m
+ 	flex-direction: row;[m
+ } */[m
+[31m-[m
+ .menueul {[m
+ 	display: flex;[m
+ 	justify-content: space-between;[m
+[36m@@ -663,6 +654,8 @@[m [mli {[m
+ }[m
+ [m
+ .cutlinearea2 {[m
+[32m+[m	[32mdisplay: flex;[m
+[32m+[m	[32mjustify-content: space-between;[m
+ 	padding-top: 220px;[m
+ 	font-weight: 800;[m
+ 	font-size: 50px;[m
+[36m@@ -902,20 +895,20 @@[m [mvar key;[m
+ </head>[m
+ <body style="height: 100vh;">[m
+ 	<div class="allwrapper">[m
+[31m-	[m
+[31m-	<div class="headerarea">[m
+[31m-	<%@ include file="/pcNave.jsp"%>[m
+[31m-		<div class="item_bg">[m
+[31m-			<div class="bannerarea">[m
+[31m-				<h3>도심속 모두의 화방에 오신걸</h3>[m
+[31m-				<p>환영합니다.</p>[m
+[31m-			</div>[m
+ [m
+[32m+[m		[32m<div class="headerarea">[m
+[32m+[m			[32m<%@ include file="/pcNave.jsp"%>[m
+[32m+[m			[32m<div class="item_bg">[m
+[32m+[m				[32m<div class="bannerarea">[m
+[32m+[m					[32m<h3>도심속 모두의 화방에 오신걸</h3>[m
+[32m+[m					[32m<p>환영합니다.</p>[m
+[32m+[m				[32m</div>[m
+[32m+[m
+[32m+[m			[32m</div>[m
+ 		</div>[m
+[31m-</div>[m
+ [m
+ [m
+[31m-<!--중간 네브바로 특정 스크롤 내려오면 따라오는건데 우선 주석처리함  -->[m
+[32m+[m		[32m<!--중간 네브바로 특정 스크롤 내려오면 따라오는건데 우선 주석처리함  -->[m
+ 		<!-- <div class="menuewrapper navbar navbar-expand-lg navbar-light bg-light menuewrapper">[m
+ 			<div class="menuediv container">[m
+ 				<button class="navbar-toggler" type="button" data-toggle="collapse"[m
+[36m@@ -963,10 +956,10 @@[m [mvar key;[m
+ 						</div>[m
+ 						<div class="centerimginfo">[m
+ 							<h3>원데이 클래스</h3>[m
+[31m-							<a href="getreserve.do?nextpage=0">detail</a>	[m
+[32m+[m							[32m<a href="getreserve.do?nextpage=0">detail</a>[m
+ 						</div>[m
+ 					</div>[m
+[31m-			[m
+[32m+[m
+ 					<div class="imgcolumns">[m
+ 						<div class="centerimg">[m
+ 							<img src="./img_mainhome/main2.jpg">[m
+[36m@@ -1176,7 +1169,18 @@[m [mvar key;[m
+ 		</div>[m
+ [m
+ [m
+[31m-		<div class="cutlinearea2">자주찾는질문을 모아봤어요</div>[m
+[32m+[m		[32m<div class="cutlinearea2">[m
+[32m+[m			[32m<div>자주찾는질문을 모아봤어요</div>[m
+[32m+[m			[32m<div class="firstgetboad">더질문하고 싶어요</div>[m
+[32m+[m[41m						[m
+[32m+[m			[32m<script>[m
+[32m+[m		[32m$('.firstgetboad').on("click",()=>{[m
+[32m+[m			[32mwindow.location.href="firstgetboad.do?startpage=0"[m
+[32m+[m[41m			[m
+[32m+[m		[32m})[m
+[32m+[m		[32m</script>[m
+[32m+[m
+[32m+[m		[32m</div>[m
+ [m
+ [m
+ 		<div class="qnaarea">[m
+[36m@@ -1295,11 +1299,11 @@[m [mvar key;[m
+ 	</div>[m
+ [m
+ [m
+[31m-	[m
+[31m-<!-- 모바일디자인 시작 -->[m
+[32m+[m
+[32m+[m	[32m<!-- 모바일디자인 시작 -->[m
+ 	<div class="mobileallwrapper">[m
+[31m-	[m
+[31m-<%@ include file="/mobileNave.jsp"%>[m
+[32m+[m
+[32m+[m		[32m<%@ include file="/mobileNave.jsp"%>[m
+ [m
+ [m
+ 		<div class="center">[m
+[36m@@ -1324,7 +1328,7 @@[m [mvar key;[m
+ 						<h4>상품구경</h4>[m
+ 					</a>[m
+ 				</div>[m
+[31m-								[m
+[32m+[m
+ 				<div class="contentsitems">[m
+ 					<a href="getreserve.do?nextpage=0">[m
+ 						<div class="workcontent"></div>[m
+[1mdiff --git a/final3/finall3/src/main/webapp/mobileNave.jsp b/final3/finall3/src/main/webapp/mobileNave.jsp[m
+[1mindex c906c78..937a3e4 100644[m
+[1m--- a/final3/finall3/src/main/webapp/mobileNave.jsp[m
+[1m+++ b/final3/finall3/src/main/webapp/mobileNave.jsp[m
+[36m@@ -110,8 +110,8 @@[m [mbody {[m
+ 							<li><a href="myreserveinfo.do?user_code=${user_code}">예약현황</a></li>[m
+ 							<li class="nav-item active"><a class="nav-link"[m
+ 								href="mypayinfo.do?user_code=${user_code}&id=${userId}">결제현황</a></li>[m
+[31m-							<li><a href="logout.do">로그아웃</a></li>[m
+[31m-							<li><a href="getreserve.do?nextpage=0">테스트예약페이지</a></li>												[m
+[32m+[m							[32m<li><a href="logout.do">로그아웃</a></li>[m[41m							[m
+[32m+[m							[32m<!-- <li><a href="getreserve.do?nextpage=0">테스트예약페이지</a></li>	 -->[m[41m											[m
+ 						</c:when>[m
+ 												[m
+ 						<c:otherwise>[m
+[1mdiff --git a/final3/finall3/src/main/webapp/writeboard.jsp b/final3/finall3/src/main/webapp/writeboard.jsp[m
+[1mindex 050c90d..e8304cd 100644[m
+[1m--- a/final3/finall3/src/main/webapp/writeboard.jsp[m
+[1m+++ b/final3/finall3/src/main/webapp/writeboard.jsp[m
+[36m@@ -25,7 +25,10 @@[m
+ 	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="[m
+ 	crossorigin="anonymous"></script>[m
+ <style>[m
+[31m-a {    color: #0275d8;[m
+[32m+[m
+[32m+[m
+[32m+[m[32ma {[m
+[32m+[m	[32mcolor: black !important;[m
+ 	text-decoration: none !important;[m
+ }[m
+ [m
+[36m@@ -34,11 +37,9 @@[m [ma:visited {[m
+ }[m
+ [m
+ .mobileheader {[m
+[31m-	display: nonel;[m
+[32m+[m	[32mdisplay: none;[m
+ }[m
+ [m
+[31m-[m
+[31m-[m
+ ul {[m
+ 	padding: 0 0;[m
+ 	margin: 0 0;[m
+[36m@@ -48,38 +49,6 @@[m [mli {[m
+ 	list-style: none;[m
+ }[m
+ [m
+[31m-.menunave {[m
+[31m-	margin-right: auto;[m
+[31m-	margin-left: auto;[m
+[31m-	max-width: 1050px;[m
+[31m-	color: white;[m
+[31m-	background: #1a73e8;[m
+[31m-	font-size: 16px;[m
+[31m-	font-weight: 500;[m
+[31m-	background-color: #000;[m
+[31m-}[m
+[31m-[m
+[31m-.nave {[m
+[31m-	display: flex;[m
+[31m-	justify-content: space-between;[m
+[31m-	margin-right: auto;[m
+[31m-	margin-left: auto;[m
+[31m-	max-width: 1050px;[m
+[31m-	color: black;[m
+[31m-	/*   background: #1a73e8; */[m
+[31m-	font-size: 13px;[m
+[31m-	font-weight: 600;[m
+[31m-}[m
+[31m-[m
+[31m-.homeicon {[m
+[31m-	background-image: url('./img_icon/homeicon.png');[m
+[31m-	background-position: center;[m
+[31m-	background-repeat: no-repeat;[m
+[31m-	background-attachment: scroll;[m
+[31m-	background-size: cover;[m
+[31m-	width: 40px;[m
+[31m-	height: 39.5px;[m
+[31m-}[m
+ .wrapper {[m
+ 	margin-right: auto;[m
+ 	margin-left: auto;[m
+[36m@@ -90,32 +59,6 @@[m [mli {[m
+ 	font-weight: 600;[m
+ }[m
+ [m
+[31m-.nave ul {[m
+[31m-	display: flex;[m
+[31m-	flex-direction: row;[m
+[31m-	justify-content: end;[m
+[31m-}[m
+[31m-[m
+[31m-.menunave .menulist {[m
+[31m-	overflow: hidden;[m
+[31m-	text-overflow: ellipsis;[m
+[31m-	justify-content: space-between;[m
+[31m-	display: flex;[m
+[31m-	flex-direction: row;[m
+[31m-}[m
+[31m-[m
+[31m-.nave li {[m
+[31m-	padding: 10px 10px;[m
+[31m-}[m
+[31m-[m
+[31m-.menunave .menulistcontent {[m
+[31m-	height: 100%;[m
+[31m-	background-color: #f4f4f4;[m
+[31m-	color: #000;[m
+[31m-	padding: 20px 20px;[m
+[31m-	color: #000;[m
+[31m-}[m
+[31m-[m
+ .myalarm {[m
+ 	text-align: right;[m
+ }[m
+[36m@@ -163,16 +106,12 @@[m [mtextarea {[m
+ }[m
+ [m
+ @media screen and (max-width: 701px) {[m
+[31m-[m
+[31m-	.nave {[m
+[31m-		display: none !important;[m
+[31m-	}[m
+ 	.mobileheader {[m
+ 		display: block;[m
+ 	}[m
+[31m-[m
+[31m-[m
+[31m-[m
+[32m+[m	[32m#navebarwrapper {[m
+[32m+[m		[32mdisplay: none;[m
+[32m+[m	[32m}[m
+ 	table {[m
+ 		width: 100%;[m
+ 	}[m
+[36m@@ -183,14 +122,6 @@[m [mtextarea {[m
+ 	.writingcontainer {[m
+ 		height: 350px;[m
+ 	}[m
+[31m-	.menunave {[m
+[31m-		max-width: 450px;[m
+[31m-	}[m
+[31m-	.menulistcontent {[m
+[31m-		white-space: nowrap;[m
+[31m-		max-height: 64px;[m
+[31m-		padding: 10px !important;[m
+[31m-	}[m
+ 	.rwd-table {[m
+ 		max-width: 450px;[m
+ 	}[m
+[36m@@ -501,52 +432,9 @@[m [mfunction smartphone(){[m
+ <body>[m
+ [m
+ [m
+[31m-	<div class="nave">[m
+[31m-	<a href="mainhome.jsp">[m
+[31m-		<div class="homeicon" >			[m
+[31m-		</div>[m
+[31m-		</a>[m
+[31m-	<div>[m
+[31m-		<ul>[m
+[31m-			<c:choose>[m
+[31m-				<c:when test="${userId ne null || user_where=='finalluser'}">[m
+[31m-					<li><c:if test="${user_where=='finalluser'}">[m
+[31m-							<a href="myinfo.jsp">정보수정</a>[m
+[31m-						</c:if></li>[m
+[31m-					<li><a href="cartlist.do?id=${userId}">장바구니</a></li>[m
+[31m-					<li><a href="myreserveinfo.do?user_code=${user_code}">나의예약현황</a></li>[m
+[31m-					<li><a href="logout.do">로그아웃</a></li>[m
+[31m-				</c:when>[m
+[31m-				<c:otherwise>[m
+[31m-					<li><a href="login.jsp">로그인</a></li>[m
+[31m-					<li><a href="phonesms.jsp">가입</a></li>[m
+[31m-				</c:otherwise>[m
+[31m-[m
+[31m-			</c:choose>[m
+[31m-[m
+[31m-		</ul>[m
+[31m-		</div>[m
+[31m-	</div>[m
+[31m-	[m
+[31m-<%@ include file="/mobileNave.jsp"%>[m
+[31m-	<div class="menunave">[m
+[31m-		<div id="menulist" class="menulist">[m
+[31m-		<div class="menulistcontent">[m
+[31m-				<a href="firstgetboad.do?startpage=0">자유로운게시판</a>[m
+[31m-			</div>[m
+[31m-		[m
+[31m-			<div class="menulistcontent">[m
+[31m-				<a>원데이클래스</a>[m
+[31m-			</div>[m
+[31m-			<div class="menulistcontent">[m
+[31m-				<a>미술용품</a>[m
+[31m-			</div>[m
+[31m-			<div class="menulistcontent">[m
+[31m-				<a>회원작품목록</a>[m
+[31m-			</div>[m
+[31m-			[m
+[31m-		</div>[m
+[31m-	</div>[m
+[32m+[m
+[32m+[m	[32m<%@ include file="/pcNave.jsp"%>[m
+[32m+[m	[32m<%@ include file="/mobileNave.jsp"%>[m
+ [m
+ 	<div class="wrapper">[m
+ [m
+[36m@@ -557,9 +445,8 @@[m [mfunction smartphone(){[m
+ [m
+ [m
+ 		<div class="writecontent">[m
+[31m-[m
+ 			<div class="gasipan">[m
+[31m-				<h3>자유로운게시판</h3>[m
+[32m+[m				[32m<h3>질문/자유게시판</h3>[m
+ 			</div>[m
+ 			<div class="board">[m
+ [m
+[36m@@ -602,7 +489,7 @@[m [mfunction smartphone(){[m
+ [m
+ 					</div>[m
+ 					<div class="register">[m
+[31m-						<button >등록</button>[m
+[32m+[m						[32m<button>등록</button>[m
+ 					</div>[m
+ 				</form>[m
+ [m
+[1mdiff --git a/final3/finall3/target/classes/com/spring/finall/user/UserVO.class b/final3/finall3/target/classes/com/spring/finall/user/UserVO.class[m
+[1mindex 4e72b03..c647846 100644[m
+Binary files a/final3/finall3/target/classes/com/spring/finall/user/UserVO.class and b/final3/finall3/target/classes/com/spring/finall/user/UserVO.class differ
+[1mdiff --git a/final3/finall3/target/classes/com/spring/finall/user/impl/MemberDAOMybatis.class b/final3/finall3/target/classes/com/spring/finall/user/impl/MemberDAOMybatis.class[m
+[1mindex bb4d8a3..a7ae479 100644[m
+Binary files a/final3/finall3/target/classes/com/spring/finall/user/impl/MemberDAOMybatis.class and b/final3/finall3/target/classes/com/spring/finall/user/impl/MemberDAOMybatis.class differ
+[1mdiff --git a/final3/finall3/target/classes/com/spring/finall/view/controller/Import.class b/final3/finall3/target/classes/com/spring/finall/view/controller/Import.class[m
+[1mindex 5351ea0..fd60ff4 100644[m
+Binary files a/final3/finall3/target/classes/com/spring/finall/view/controller/Import.class and b/final3/finall3/target/classes/com/spring/finall/view/controller/Import.class differ
+[1mdiff --git a/final3/finall3/target/classes/com/spring/finall/view/controller/NaverLoginController.class b/final3/finall3/target/classes/com/spring/finall/view/controller/NaverLoginController.class[m
+[1mdeleted file mode 100644[m
+[1mindex 535d3ef..0000000[m
+Binary files a/final3/finall3/target/classes/com/spring/finall/view/controller/NaverLoginController.class and /dev/null differ
+[1mdiff --git a/final3/finall3/target/classes/mappings/login-mapping.xml b/final3/finall3/target/classes/mappings/login-mapping.xml[m
+[1mindex 7e2e214..3c4a4dd 100644[m
+[1m--- a/final3/finall3/target/classes/mappings/login-mapping.xml[m
+[1m+++ b/final3/finall3/target/classes/mappings/login-mapping.xml[m
+[36m@@ -27,6 +27,7 @@[m
+ [m
+ [m
+ 	<!-- insert into user values(#{id},#{password}) -->[m
+[32m+[m	[32m<!-- 한편 네이버 정보로 가입시킬시는 password 컬럼에 불필요란 갑을 넣고있다. -->[m
+ 	<insert id="insertmember" parameterType="userVO"[m
+ 		useGeneratedKeys="true" keyProperty="user_code">[m
+ [m
+[36m@@ -60,7 +61,9 @@[m
+ [m
+ [m
+ [m
+[31m-[m
+[32m+[m[32m<!--네이버 회원 전용 메서드이다. 주의할건[m
+[32m+[m[32m네이버가 준 회원의 아이디는 유일하며, 현재 네이버에서 받은 유일한 아이디로만 톰캣사이트에서  기회원인지 판단 가능하다.[m
+[32m+[m[32m-->[m
+ 	<select id="checkidMembership" resultType="userVO">[m
+ [m
+ 		select * from user[m
+[1mdiff --git a/final3/finall3/target/m2e-wtp/web-resources/META-INF/maven/com.spring/finall/pom.properties b/final3/finall3/target/m2e-wtp/web-resources/META-INF/maven/com.spring/finall/pom.properties[m
+[1mindex 9fd114d..243ec31 100644[m
+[1m--- a/final3/finall3/target/m2e-wtp/web-resources/META-INF/maven/com.spring/finall/pom.properties[m
+[1m+++ b/final3/finall3/target/m2e-wtp/web-resources/META-INF/maven/com.spring/finall/pom.properties[m
+[36m@@ -1,5 +1,5 @@[m
+ #Generated by Maven Integration for Eclipse[m
+[31m-#Mon Jun 17 18:53:10 KST 2024[m
+[32m+[m[32m#Sat Jun 29 22:30:20 KST 2024[m
+ m2e.projectLocation=C\:\\swork\\finall3[m
+ m2e.projectName=finall3[m
+ groupId=com.spring[m
+[1mdiff --git a/final3/finall3/target/m2e-wtp/web-resources/META-INF/maven/com.spring/finall/pom.xml b/final3/finall3/target/m2e-wtp/web-resources/META-INF/maven/com.spring/finall/pom.xml[m
+[1mindex 4640547..262f50d 100644[m
+[1m--- a/final3/finall3/target/m2e-wtp/web-resources/META-INF/maven/com.spring/finall/pom.xml[m
+[1m+++ b/final3/finall3/target/m2e-wtp/web-resources/META-INF/maven/com.spring/finall/pom.xml[m
+[36m@@ -100,7 +100,10 @@[m
+ [m
+ [m
+ [m
+[31m-		<!-- 결제 외부API -->[m
+[32m+[m		[32m<!-- 외부서버와 통신[m
+[32m+[m		[32m대표 제공클래스는[m
+[32m+[m		[32mHttpClient client = HttpClientBuilder.create().build();[m[41m		[m
+[32m+[m		[32m -->[m
+ 		<dependency>[m
+ 			<groupId>org.apache.httpcomponents</groupId>[m
+ 			<artifactId>httpclient</artifactId>[m
+[36m@@ -108,7 +111,10 @@[m
+ 		</dependency>[m
+ [m
+ [m
+[31m-		<!--아작스 -->[m
+[32m+[m		[32m<!--json형태를 자바로 또는 자바를 json형태로[m
+[32m+[m		[32m대표 제공클래스는[m[41m [m
+[32m+[m		[32mObjectMapper mapper = new ObjectMapper();[m
+[32m+[m		[32m-->[m
+ 		<dependency>[m
+ 			<groupId>com.fasterxml.jackson.core</groupId>[m
+ 			<artifactId>jackson-databind</artifactId>[m
