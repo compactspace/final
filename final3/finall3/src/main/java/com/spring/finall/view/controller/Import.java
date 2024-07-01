@@ -124,7 +124,8 @@ public class Import {
 		HttpPost post = new HttpPost(IMPORT_TOKEN_URL);
 		Map<String, String> m = new HashMap<String, String>();
 		m.put("imp_key", KEY);
-		m.put("imp_secret", SECRET); // 맵방식이라 보낼시 받는 곳엣 폼으로 바꿔주자 :new UrlEncodedFormEntity(convertParameter(m)
+		m.put("imp_secret", SECRET); 
+		// 맵방식이라 보낼시 받는 곳엣 폼으로 바꿔주자 :new UrlEncodedFormEntity(convertParameter(m)
 		try {
 			post.setEntity(new UrlEncodedFormEntity(convertParameter(m)));
 			HttpResponse res = client.execute(post);

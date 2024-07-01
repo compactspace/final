@@ -110,8 +110,8 @@ body {
 							<li><a href="myreserveinfo.do?user_code=${user_code}">예약현황</a></li>
 							<li class="nav-item active"><a class="nav-link"
 								href="mypayinfo.do?user_code=${user_code}&id=${userId}">결제현황</a></li>
-							<li><a href="logout.do">로그아웃</a></li>
-							<li><a href="getreserve.do?nextpage=0">테스트예약페이지</a></li>												
+							<li><a href="logout.do">로그아웃</a></li>							
+							<!-- <li><a href="getreserve.do?nextpage=0">테스트예약페이지</a></li>	 -->											
 						</c:when>
 												
 						<c:otherwise>

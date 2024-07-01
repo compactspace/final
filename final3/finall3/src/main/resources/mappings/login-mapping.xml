@@ -27,6 +27,7 @@
 
 
 	<!-- insert into user values(#{id},#{password}) -->
+	<!-- 한편 네이버 정보로 가입시킬시는 password 컬럼에 불필요란 갑을 넣고있다. -->
 	<insert id="insertmember" parameterType="userVO"
 		useGeneratedKeys="true" keyProperty="user_code">
 
@@ -60,7 +61,9 @@
 
 
 
-
+<!--네이버 회원 전용 메서드이다. 주의할건
+네이버가 준 회원의 아이디는 유일하며, 현재 네이버에서 받은 유일한 아이디로만 톰캣사이트에서  기회원인지 판단 가능하다.
+-->
 	<select id="checkidMembership" resultType="userVO">
 
 		select * from user

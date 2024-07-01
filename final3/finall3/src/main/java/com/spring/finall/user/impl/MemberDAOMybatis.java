@@ -21,7 +21,7 @@ public class MemberDAOMybatis {
 	public boolean insertMembership(UserVO vo) {
 
 		Integer checkrow = (Integer) mybatis.selectOne("UserVO.isDuplicated", vo);
-System.out.println("checkrow->>>>"+checkrow);
+		System.out.println("checkrow->>>>"+checkrow);
 		
 		
 		if (checkrow == 0) {
@@ -56,13 +56,21 @@ System.out.println("checkrow->>>>"+checkrow);
 	public boolean checkidMembership(UserVO vo) {
 
 		
+		
+		System.out.println("UserVO.toString");
+		System.out.println(vo);
+		System.out.println("vo.getId()");
+		System.out.println(vo.getId());
+		
 		Object check = mybatis.selectOne("UserVO.checkidMembership", vo);
+		System.out.println("아이확인값이 널?:"+check);
+		
 		if (check == null) {
-			System.out.println("베티스의트루문은타나");
+			System.out.println("네이버 정보로 가입한적없음");
 			checkid = true;
 			return checkid;
 		} else {
-			//즉 가입되어 있는 회원이라면
+			System.out.println("네이버 정보로 가입한적있음");
 			checkid = false;
 			return checkid;
 		}

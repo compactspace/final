@@ -26,15 +26,20 @@
 	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
 	crossorigin="anonymous"></script>
 <style>
-a {    color: #0275d8;
+.mobileheader {
+	display: none;
+}
+
+
+a {
+
+	color: black !important;
 	text-decoration: none !important;
 }
 
 a:visited {
 	text-decoration: none;
 }
-
-
 
 .mobileheader {
 	display: nonel;
@@ -47,65 +52,6 @@ ul {
 
 li {
 	list-style: none;
-}
-
-.menunave {
-	margin-right: auto;
-	margin-left: auto;
-	max-width: 1050px;
-	color: white;
-	background: #1a73e8;
-	font-size: 16px;
-	font-weight: 500;
-	background-color: #000;
-}
-
-.nave {
-	display: flex;
-	justify-content: space-between;
-	margin-right: auto;
-	margin-left: auto;
-	max-width: 1050px;
-	color: black;
-	/*   background: #1a73e8; */
-	font-size: 13px;
-	font-weight: 600;
-}
-
-.homeicon {
-	background-image: url('./img_icon/homeicon.png');
-	background-position: center;
-	background-repeat: no-repeat;
-	background-attachment: scroll;
-	background-size: cover;
-	width: 40px;
-	height: 39.5px;
-}
-
-.nave ul {
-	display: flex;
-	flex-direction: row;
-	justify-content: end;
-}
-
-.menunave .menulist {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	justify-content: space-between;
-	display: flex;
-	flex-direction: row;
-}
-
-.nave li {
-	padding: 10px 10px;
-}
-
-.menunave .menulistcontent {
-	height: 100%;
-	background-color: #f4f4f4;
-	color: #000;
-	padding: 20px 20px;
-	color: #000;
 }
 
 .writing {
@@ -203,22 +149,17 @@ th, td {
 }
 
 @media screen and (max-width: 701px) {
-	.nave {
-		display: none !important;
+
+	#navebarwrapper {
+	
+		display: none;
 	}
+	
 	.mobileheader {
 		display: block;
 	}
 	.writing a {
 		padding: 10px 10px;
-	}
-	.menunave {
-		max-width: 450px;
-	}
-	.menulistcontent {
-		white-space: nowrap;
-		max-height: 64px;
-		padding: 10px !important;
 	}
 	.rwd-table {
 		max-width: 450px;
@@ -368,13 +309,9 @@ var nextpage;
 var backpage;
 
 var startbtn;
-var endbtn;		
-	
-	
-	
+var endbtn;
 	
 	window.onload=()=>{			
-		
 		
 		$("td[class=title]").on("click",(e)=>{				
 			let seq=$(e.target)[0].getAttribute("value");
@@ -383,45 +320,8 @@ var endbtn;
 		//리턴 펠스는 상위 전파를 막아주는 기능이란다..
 		 return false ;		
 			
-		})
+		})		
 		
-		
-		
-		
-		let menulistcontent=$("div[class='menulistcontent']");
-	 	for(let k=1; k<menulistcontent.length; k++){			
-			$(menulistcontent[k]).css({"background-color":"#000", "color":"rgba(255, 255, 255, .5)"})		
-		} 		
-		/* 게씨발 하위 a 링크때문에 이벤트 전파가 되어 이상하게 적용된줄알음 이벤트 전파 막자...  */
-		$("div[class='menulistcontent']").on("click",(e)=>{
-			
-			
-			for(let k=0; k<menulistcontent.length; k++){
-				
-				if($(e.target).text()==$(menulistcontent[k]).text()){
-					$(menulistcontent[k]).css({"background-color":"#f4f4f4", "color":"#000"   })	
-					
-				}else{
-			  
-					$(menulistcontent[k]).css({"background-color":"rgb(0, 0, 0)", "color":"rgba(255, 255, 255, 0.5)"})	
-				}
-				
-				
-				
-				
-				/* console.log(e.target);
-				console.log(menulistcontent[k]); */
-			}
-			
-		
-			
-			
-			
-		})
-		
-		
-		
-		smartphone();
 		
 		//개별 버튼 페이지 게시글
 		// select * from board limit  버튼태그 벨류, 10
@@ -538,68 +438,18 @@ var endbtn;
 			
 	}//윈도우 온로드 종료	
 
-function smartphone(){
-		
-	document.getElementById("menulist").addEventListener("touchstart", successtouchmove, false);
-		
-	}	
-	
-	function successtouchmove(smartEvent){
-		console.log(smartEvent.target)
-	}
+
 	
 	
 	
 </script>
 </head>
 <body>
-
-	<div class="nave">
-		<a href="mainhome.jsp">
-			<div class="homeicon"></div>
-		</a>
-		<div>
-			<ul>
-				<c:choose>
-					<c:when test="${userId ne null || user_where=='finalluser'}">
-						<li><c:if test="${user_where=='finalluser'}">
-								<a href="myinfo.jsp">정보수정</a>
-							</c:if></li>
-						<li><a href="cartlist.do?id=${userId}">장바구니</a></li>
-						<li><a href="myreserveinfo.do?user_code=${user_code}">나의예약현황</a></li>
-						<li><a href="logout.do">로그아웃</a></li>
-					</c:when>
-					<c:otherwise>
-						<li><a href="login.jsp">로그인</a></li>
-						<li><a href="phonesms.jsp">가입</a></li>
-					</c:otherwise>
-
-				</c:choose>
-
-			</ul>
-		</div>
-	</div>
+	<%@ include file="/pcNave.jsp"%>
 	<%@ include file="/mobileNave.jsp"%>
-	<div class="menunave">
-		<div id="menulist" class="menulist">
-			<div class="menulistcontent">
-				<a href="firstgetboad.do?startpage=0">자유로운게시판</a>
-			</div>
-			<div class="menulistcontent">
-				<a>원데이클래스</a>
-			</div>
-			<div class="menulistcontent">
-				<a>미술용품</a>
-			</div>
-			<div class="menulistcontent">
-				<a>회원작품목록</a>
-			</div>
-
-		</div>
-	</div>
-
 	<div class="container">
-		<h3>자유게시판</h3>
+	
+		<h3>질문/자유게시판</h3>
 		<div class="writing">
 			<c:if test="${userId ne null}">
 				<a href="writeboard.jsp">글작성</a>

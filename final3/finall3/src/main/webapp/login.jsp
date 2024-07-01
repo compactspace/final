@@ -211,7 +211,6 @@ h3 {
 <script>
 	window.onload = function() {
 		$("#naver").click(function() {
-
 			location.href = "naverloginform.do"
 		})
 

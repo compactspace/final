@@ -100,7 +100,10 @@
 
 
 
-		<!-- 결제 외부API -->
+		<!-- 외부서버와 통신
+		대표 제공클래스는
+		HttpClient client = HttpClientBuilder.create().build();		
+		 -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
@@ -108,7 +111,10 @@
 		</dependency>
 
 
-		<!--아작스 -->
+		<!--json형태를 자바로 또는 자바를 json형태로
+		대표 제공클래스는 
+		ObjectMapper mapper = new ObjectMapper();
+		-->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>

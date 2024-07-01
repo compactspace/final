@@ -27,40 +27,38 @@
 	display: none;
 }
 
-
-
-
+.firstgetboad {
+	border-radius: 10px;
+	color: white;
+	border: 1px solid;
+	background-color: rgb(255, 88, 98);
+}
 
 @media screen and (max-width: 701px) {
-
-html,body{
-
-max-width: 344px !important;
-margin: 0px auto !important;
-padding:0px 0px!important;
-}	
+	html, body {
+		max-width: 344px !important;
+		margin: 0px auto !important;
+		padding: 0px 0px !important;
+	}
 
 	/* .nave ul {
 		display: flex;
 		flex-direction: row;
 		justify-content: end;
 	} */
-	
-	a {    color: #0275d8;
-	text-decoration: none !important;
-}
-
-a:visited {
-	text-decoration: none;
-}
-	
+	a {
+		color: #0275d8;
+		text-decoration: none !important;
+	}
+	a:visited {
+		text-decoration: none;
+	}
 	.allwrapper {
 		display: none;
 	}
 	.mobileallwrapper {
 		display: block;
 	}
-	
 	.center {
 		display: flex;
 		flex-direction: column;
@@ -219,8 +217,6 @@ a:visited {
 		font-size: 12px;
 	}
 } /* 반응형종료 */
-
-
 .allwrapper {
 	height: 100%;
 	position: relative;
@@ -242,19 +238,16 @@ li {
 	font-weight: 300;
 }
  */
-  
-  
-  .headerarea{
-  background-image: url('./img_mainhome/banner1.jpeg');
+.headerarea {
+	background-image: url('./img_mainhome/banner1.jpeg');
 	background-color: aqua;
 	background-position: center;
 	background-repeat: no-repeat;
 	background-attachment: scroll;
 	background-size: cover;
 	height: 100%;
-  }
- 	
-  
+}
+
 /* .item_bg {
 	background-image: url('./img_mainhome/banner1.jpeg');
 	background-color: aqua;
@@ -264,7 +257,6 @@ li {
 	background-size: cover;
 	height: 100%;
 } */
-
 .spacingcenter {
 	margin-top: 60px;
 	margin-bottom: 60px;
@@ -384,7 +376,6 @@ li {
 	display: flex;
 	flex-direction: row;
 } */
-
 .menueul {
 	display: flex;
 	justify-content: space-between;
@@ -663,6 +654,8 @@ li {
 }
 
 .cutlinearea2 {
+	display: flex;
+	justify-content: space-between;
 	padding-top: 220px;
 	font-weight: 800;
 	font-size: 50px;
@@ -902,20 +895,20 @@ var key;
 </head>
 <body style="height: 100vh;">
 	<div class="allwrapper">
-	
-	<div class="headerarea">
-	<%@ include file="/pcNave.jsp"%>
-		<div class="item_bg">
-			<div class="bannerarea">
-				<h3>도심속 모두의 화방에 오신걸</h3>
-				<p>환영합니다.</p>
+
+		<div class="headerarea">
+			<%@ include file="/pcNave.jsp"%>
+			<div class="item_bg">
+				<div class="bannerarea">
+					<h3>도심속 모두의 화방에 오신걸</h3>
+					<p>환영합니다.</p>
+				</div>
+
 			</div>
-
 		</div>
-</div>
 
 
-<!--중간 네브바로 특정 스크롤 내려오면 따라오는건데 우선 주석처리함  -->
+		<!--중간 네브바로 특정 스크롤 내려오면 따라오는건데 우선 주석처리함  -->
 		<!-- <div class="menuewrapper navbar navbar-expand-lg navbar-light bg-light menuewrapper">
 			<div class="menuediv container">
 				<button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -963,10 +956,10 @@ var key;
 						</div>
 						<div class="centerimginfo">
 							<h3>원데이 클래스</h3>
-							<a href="getreserve.do?nextpage=0">detail</a>	
+							<a href="getreserve.do?nextpage=0">detail</a>
 						</div>
 					</div>
-			
+
 					<div class="imgcolumns">
 						<div class="centerimg">
 							<img src="./img_mainhome/main2.jpg">
@@ -1176,7 +1169,18 @@ var key;
 		</div>
 
 
-		<div class="cutlinearea2">자주찾는질문을 모아봤어요</div>
+		<div class="cutlinearea2">
+			<div>자주찾는질문을 모아봤어요</div>
+			<div class="firstgetboad">더질문하고 싶어요</div>
+						
+			<script>
+		$('.firstgetboad').on("click",()=>{
+			window.location.href="firstgetboad.do?startpage=0"
+			
+		})
+		</script>
+
+		</div>
 
 
 		<div class="qnaarea">
@@ -1295,11 +1299,11 @@ var key;
 	</div>
 
 
-	
-<!-- 모바일디자인 시작 -->
+
+	<!-- 모바일디자인 시작 -->
 	<div class="mobileallwrapper">
-	
-<%@ include file="/mobileNave.jsp"%>
+
+		<%@ include file="/mobileNave.jsp"%>
 
 
 		<div class="center">
@@ -1324,7 +1328,7 @@ var key;
 						<h4>상품구경</h4>
 					</a>
 				</div>
-								
+
 				<div class="contentsitems">
 					<a href="getreserve.do?nextpage=0">
 						<div class="workcontent"></div>

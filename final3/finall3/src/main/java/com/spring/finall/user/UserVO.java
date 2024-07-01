@@ -3,6 +3,10 @@ package com.spring.finall.user;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.ToString;
+
+
+@ToString
 public class UserVO {
 
 	private String id;
@@ -151,10 +155,5 @@ public class UserVO {
 	}
 
 	
-	@Override
-	
-	public	String toString() {
-		return "["+"id:"+this.getId()+"pwd:"+this.getPassword()+"]";
-	}
 	
 }

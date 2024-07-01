@@ -25,7 +25,10 @@
 	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
 	crossorigin="anonymous"></script>
 <style>
-a {    color: #0275d8;
+
+
+a {
+	color: black !important;
 	text-decoration: none !important;
 }
 
@@ -34,10 +37,8 @@ a:visited {
 }
 
 .mobileheader {
-	display: nonel;
+	display: none;
 }
-
-
 
 ul {
 	padding: 0 0;
@@ -48,38 +49,6 @@ li {
 	list-style: none;
 }
 
-.menunave {
-	margin-right: auto;
-	margin-left: auto;
-	max-width: 1050px;
-	color: white;
-	background: #1a73e8;
-	font-size: 16px;
-	font-weight: 500;
-	background-color: #000;
-}
-
-.nave {
-	display: flex;
-	justify-content: space-between;
-	margin-right: auto;
-	margin-left: auto;
-	max-width: 1050px;
-	color: black;
-	/*   background: #1a73e8; */
-	font-size: 13px;
-	font-weight: 600;
-}
-
-.homeicon {
-	background-image: url('./img_icon/homeicon.png');
-	background-position: center;
-	background-repeat: no-repeat;
-	background-attachment: scroll;
-	background-size: cover;
-	width: 40px;
-	height: 39.5px;
-}
 .wrapper {
 	margin-right: auto;
 	margin-left: auto;
@@ -88,32 +57,6 @@ li {
 	/*   background: #1a73e8; */
 	font-size: 13px;
 	font-weight: 600;
-}
-
-.nave ul {
-	display: flex;
-	flex-direction: row;
-	justify-content: end;
-}
-
-.menunave .menulist {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	justify-content: space-between;
-	display: flex;
-	flex-direction: row;
-}
-
-.nave li {
-	padding: 10px 10px;
-}
-
-.menunave .menulistcontent {
-	height: 100%;
-	background-color: #f4f4f4;
-	color: #000;
-	padding: 20px 20px;
-	color: #000;
 }
 
 .myalarm {
@@ -163,16 +106,12 @@ textarea {
 }
 
 @media screen and (max-width: 701px) {
-
-	.nave {
-		display: none !important;
-	}
 	.mobileheader {
 		display: block;
 	}
-
-
-
+	#navebarwrapper {
+		display: none;
+	}
 	table {
 		width: 100%;
 	}
@@ -182,14 +121,6 @@ textarea {
 	}
 	.writingcontainer {
 		height: 350px;
-	}
-	.menunave {
-		max-width: 450px;
-	}
-	.menulistcontent {
-		white-space: nowrap;
-		max-height: 64px;
-		padding: 10px !important;
 	}
 	.rwd-table {
 		max-width: 450px;
@@ -501,52 +432,9 @@ function smartphone(){
 <body>
 
 
-	<div class="nave">
-	<a href="mainhome.jsp">
-		<div class="homeicon" >			
-		</div>
-		</a>
-	<div>
-		<ul>
-			<c:choose>
-				<c:when test="${userId ne null || user_where=='finalluser'}">
-					<li><c:if test="${user_where=='finalluser'}">
-							<a href="myinfo.jsp">정보수정</a>
-						</c:if></li>
-					<li><a href="cartlist.do?id=${userId}">장바구니</a></li>
-					<li><a href="myreserveinfo.do?user_code=${user_code}">나의예약현황</a></li>
-					<li><a href="logout.do">로그아웃</a></li>
-				</c:when>
-				<c:otherwise>
-					<li><a href="login.jsp">로그인</a></li>
-					<li><a href="phonesms.jsp">가입</a></li>
-				</c:otherwise>
 
-			</c:choose>
-
-		</ul>
-		</div>
-	</div>
-	
-<%@ include file="/mobileNave.jsp"%>
-	<div class="menunave">
-		<div id="menulist" class="menulist">
-		<div class="menulistcontent">
-				<a href="firstgetboad.do?startpage=0">자유로운게시판</a>
-			</div>
-		
-			<div class="menulistcontent">
-				<a>원데이클래스</a>
-			</div>
-			<div class="menulistcontent">
-				<a>미술용품</a>
-			</div>
-			<div class="menulistcontent">
-				<a>회원작품목록</a>
-			</div>
-			
-		</div>
-	</div>
+	<%@ include file="/pcNave.jsp"%>
+	<%@ include file="/mobileNave.jsp"%>
 
 	<div class="wrapper">
 
@@ -557,9 +445,8 @@ function smartphone(){
 
 
 		<div class="writecontent">
-
 			<div class="gasipan">
-				<h3>자유로운게시판</h3>
+				<h3>질문/자유게시판</h3>
 			</div>
 			<div class="board">
 
@@ -602,7 +489,7 @@ function smartphone(){
 
 					</div>
 					<div class="register">
-						<button >등록</button>
+						<button>등록</button>
 					</div>
 				</form>
 
